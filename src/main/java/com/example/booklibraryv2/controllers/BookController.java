@@ -1,8 +1,11 @@
 package com.example.booklibraryv2.controllers;
 
+import com.example.booklibraryv2.dto.BookDTO;
 import com.example.booklibraryv2.entities.Book;
+import com.example.booklibraryv2.mappers.BookMapper;
 import com.example.booklibraryv2.services.BookService;
 import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,15 +26,21 @@ public class BookController {
 
   @Autowired
   private final BookService bookService;
+  @Autowired
+  private final BookMapper bookMapper;
 
   @GetMapping
-  public List<Book> index() {
-    return bookService.getAll();
+  public List<BookDTO> index() {
+    return bookService.getAll().stream()
+        .map(bookMapper::convertToBookDTO)
+        .collect(Collectors.toList());
   }
 
   @GetMapping("/find/{searchQuery}")
-  public List<Book> findByNameContains(@PathVariable String searchQuery) {
-    return bookService.findByNameContains(searchQuery);
+  public List<BookDTO> findByNameContains(@PathVariable String searchQuery) {
+    return bookService.findByNameContains(searchQuery).stream()
+        .map(bookMapper::convertToBookDTO)
+        .collect(Collectors.toList());
   }
 
   @PostMapping("/add")
