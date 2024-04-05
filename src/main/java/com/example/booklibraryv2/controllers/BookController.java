@@ -26,40 +26,38 @@ public class BookController {
 
   @Autowired
   private final BookService bookService;
-  @Autowired
-  private final BookMapper bookMapper;
 
   @GetMapping
   public List<BookDTO> index() {
     return bookService.getAll().stream()
-        .map(bookMapper::convertToBookDTO)
+        .map(BookMapper::convertToBookDTO)
         .collect(Collectors.toList());
   }
 
   @GetMapping("/find/{searchQuery}")
   public List<BookDTO> findByNameContains(@PathVariable String searchQuery) {
     return bookService.findByNameContains(searchQuery).stream()
-        .map(bookMapper::convertToBookDTO)
+        .map(BookMapper::convertToBookDTO)
         .collect(Collectors.toList());
   }
 
   @PostMapping("/add")
-  public ResponseEntity<HttpStatus> addNew(@RequestBody Book book) {
-    bookService.save(book);
+  public ResponseEntity<HttpStatus> addNew(@RequestBody BookDTO bookDTO) {
+    bookService.save(BookMapper.convertToBook(bookDTO));
 
     return ResponseEntity.ok(HttpStatus.OK);
   }
 
   @PatchMapping("/update")
-  public ResponseEntity<HttpStatus> update(@RequestBody Book updatedBook) {
-    bookService.update(updatedBook);
+  public ResponseEntity<HttpStatus> update(@RequestBody BookDTO updatedBook) {
+    bookService.update(BookMapper.convertToBook(updatedBook));
 
     return ResponseEntity.ok(HttpStatus.OK);
   }
 
   @DeleteMapping("/remove")
-  public ResponseEntity<HttpStatus> remove(@RequestBody Book book) {
-    bookService.delete(book);
+  public ResponseEntity<HttpStatus> remove(@RequestBody BookDTO bookDTO) {
+    bookService.delete(BookMapper.convertToBook(bookDTO));
 
     return ResponseEntity.ok(HttpStatus.OK);
   }
