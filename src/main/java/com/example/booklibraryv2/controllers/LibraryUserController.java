@@ -1,7 +1,6 @@
 package com.example.booklibraryv2.controllers;
 
 import com.example.booklibraryv2.dto.LibraryUserDTO;
-import com.example.booklibraryv2.entities.LibraryUser;
 import com.example.booklibraryv2.mappers.LibraryUserMapper;
 import com.example.booklibraryv2.services.LibraryUserService;
 import java.util.List;
