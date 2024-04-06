@@ -1,8 +1,11 @@
 package com.example.booklibraryv2.controllers;
 
+import com.example.booklibraryv2.dto.LibraryUserDTO;
 import com.example.booklibraryv2.entities.LibraryUser;
+import com.example.booklibraryv2.mappers.LibraryUserMapper;
 import com.example.booklibraryv2.services.LibraryUserService;
 import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,32 +28,36 @@ public class LibraryUserController {
   private final LibraryUserService libraryUserService;
 
   @GetMapping
-  public List<LibraryUser> index() {
-    return libraryUserService.getAll();
+  public List<com.example.booklibraryv2.dto.LibraryUserDTO> index() {
+    return libraryUserService.getAll().stream()
+        .map(LibraryUserMapper::convertToLibraryUserDTO)
+        .collect(Collectors.toList());
   }
 
   @GetMapping("/find/{searchQuery}")
-  public List<LibraryUser> findByNameContains(@PathVariable String searchQuery) {
-    return libraryUserService.findByNameContains(searchQuery);
+  public List<com.example.booklibraryv2.dto.LibraryUserDTO> findByNameContains(@PathVariable String searchQuery) {
+    return libraryUserService.findByNameContains(searchQuery).stream()
+        .map(LibraryUserMapper::convertToLibraryUserDTO)
+        .collect(Collectors.toList());
   }
 
   @PostMapping("/add")
-  public ResponseEntity<HttpStatus> addNew(@RequestBody LibraryUser libraryUser) {
-    libraryUserService.save(libraryUser);
+  public ResponseEntity<HttpStatus> addNew(@RequestBody LibraryUserDTO libraryUserDTO) {
+    libraryUserService.save(LibraryUserMapper.convertToLibraryUser(libraryUserDTO));
 
     return ResponseEntity.ok(HttpStatus.OK);
   }
 
   @PatchMapping("/update")
-  public ResponseEntity<HttpStatus> update(@RequestBody LibraryUser updatedLibraryUser) {
-    libraryUserService.update(updatedLibraryUser);
+  public ResponseEntity<HttpStatus> update(@RequestBody LibraryUserDTO updatedLibraryUser) {
+    libraryUserService.update(LibraryUserMapper.convertToLibraryUser(updatedLibraryUser));
 
     return ResponseEntity.ok(HttpStatus.OK);
   }
 
   @DeleteMapping("/remove")
-  public ResponseEntity<HttpStatus> remove(@RequestBody LibraryUser libraryUserForDelete) {
-    libraryUserService.delete(libraryUserForDelete);
+  public ResponseEntity<HttpStatus> remove(@RequestBody LibraryUserDTO libraryUserForDelete) {
+    libraryUserService.delete(LibraryUserMapper.convertToLibraryUser(libraryUserForDelete));
 
     return ResponseEntity.ok(HttpStatus.OK);
   }
