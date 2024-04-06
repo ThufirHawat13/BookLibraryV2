@@ -17,7 +17,7 @@ CREATE TABLE book
     book_holder_id  BIGINT             REFERENCES library_user (id) ON DELETE SET NULL
 );
 
-CREATE TABLE librarian
+CREATE TABLE security_user
 (
     id       BIGINT AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(50) UNIQUE NOT NULL,

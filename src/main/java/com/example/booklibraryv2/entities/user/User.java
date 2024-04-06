@@ -1,4 +1,4 @@
-package com.example.booklibraryv2.entities.librarian;
+package com.example.booklibraryv2.entities.user;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -12,8 +12,8 @@ import lombok.RequiredArgsConstructor;
 @Data
 @RequiredArgsConstructor
 @AllArgsConstructor
-@Entity(name = "librarian")
-public class Librarian {
+@Entity(name = "security_user")
+public class User {
 
   @Id
   @Column(name = "id")
