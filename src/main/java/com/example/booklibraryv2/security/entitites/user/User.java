@@ -1,4 +1,4 @@
-package com.example.booklibraryv2.entities.user;
+package com.example.booklibraryv2.security.entitites.user;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
