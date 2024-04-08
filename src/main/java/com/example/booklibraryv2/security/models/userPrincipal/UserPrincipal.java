@@ -1,5 +1,6 @@
-package com.example.booklibraryv2.security.entitites.userPrincipal;
+package com.example.booklibraryv2.security.models.userPrincipal;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.Collection;
 import lombok.Builder;
 import lombok.Getter;
@@ -12,6 +13,8 @@ public class UserPrincipal implements UserDetails {
 
   private final Long id;
   private final String username;
+  @JsonIgnore
+  private final String password;
   private final Collection<? extends GrantedAuthority> authorities;
 
   @Override
@@ -21,7 +24,7 @@ public class UserPrincipal implements UserDetails {
 
   @Override
   public String getPassword() {
-    return null;
+    return password;
   }
 
   @Override

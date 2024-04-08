@@ -2,7 +2,7 @@ package com.example.booklibraryv2.security.jwt;
 
 import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.example.booklibraryv2.security.entitites.userPrincipal.UserPrincipal;
+import com.example.booklibraryv2.security.models.userPrincipal.UserPrincipal;
 import java.util.List;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;

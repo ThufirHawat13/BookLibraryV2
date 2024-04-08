@@ -17,14 +17,21 @@ CREATE TABLE book
     book_holder_id  BIGINT             REFERENCES library_user (id) ON DELETE SET NULL
 );
 
-CREATE TABLE security_user
+INSERT INTO book (book_name, author, year_of_writing)
+VALUES ('Java Core Guide', 'Frank Foe', 2022);
+
+
+
+CREATE TABLE user_entity
 (
     id       BIGINT AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(50) UNIQUE NOT NULL,
-    password VARCHAR(50) NOT NULL,
+    password VARCHAR(200) NOT NULL,
     role     VARCHAR(16) NOT NULL
 );
 
-INSERT INTO book (book_name, author, year_of_writing)
-VALUES ('Java Core Guide', 'Frank Foe', 2022);
+INSERT INTO user_entity (username, password, role)
+VALUES ('test', '$2a$12$TvjZXZPtgT9Vz9Hjix/QRuL9mXaLiE9rOs3sA3GyGq9YQcl.9x5wW', 'USER')
+--password: test
+
 

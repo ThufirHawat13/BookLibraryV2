@@ -1,5 +1,6 @@
 package com.example.booklibraryv2.security.entitites.user;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -12,17 +13,18 @@ import lombok.RequiredArgsConstructor;
 @Data
 @RequiredArgsConstructor
 @AllArgsConstructor
-@Entity(name = "security_user")
-public class User {
+@Entity(name = "user_entity")
+public class UserEntity {
 
   @Id
   @Column(name = "id")
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private int id;
+  private long id;
   @Column(name = "username")
   private String username;
+  @JsonIgnore
   @Column(name = "password")
   private String password;
   @Column(name = "role")
-  private Role role;
+  private String role;
 }

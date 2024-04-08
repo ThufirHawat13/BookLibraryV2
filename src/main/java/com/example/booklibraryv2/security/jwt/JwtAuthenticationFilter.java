@@ -1,6 +1,6 @@
 package com.example.booklibraryv2.security.jwt;
 
-import com.example.booklibraryv2.security.entitites.userPrincipal.UserPrincipalAuthenticationToken;
+import com.example.booklibraryv2.security.models.userPrincipal.UserPrincipalAuthenticationToken;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

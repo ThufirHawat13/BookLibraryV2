@@ -1,4 +1,4 @@
-package com.example.booklibraryv2.security.entitites.userPrincipal;
+package com.example.booklibraryv2.security.models.userPrincipal;
 
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 
