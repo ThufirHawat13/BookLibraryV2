@@ -1,6 +1,6 @@
 package com.example.booklibraryv2.security.repositories;
 
-import com.example.booklibraryv2.security.entitites.user.UserEntity;
+import com.example.booklibraryv2.security.entitites.UserEntity;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

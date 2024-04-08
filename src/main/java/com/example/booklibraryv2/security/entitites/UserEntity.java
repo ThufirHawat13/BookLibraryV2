@@ -1,4 +1,4 @@
-package com.example.booklibraryv2.security.entitites.user;
+package com.example.booklibraryv2.security.entitites;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;

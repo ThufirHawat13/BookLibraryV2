@@ -1,6 +1,6 @@
 package com.example.booklibraryv2.security.services;
 
-import com.example.booklibraryv2.security.entitites.user.UserEntity;
+import com.example.booklibraryv2.security.entitites.UserEntity;
 import com.example.booklibraryv2.security.models.userPrincipal.UserPrincipal;
 import com.example.booklibraryv2.security.repositories.UserRepository;
 import java.util.List;
