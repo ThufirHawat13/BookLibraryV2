@@ -15,14 +15,11 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class CustomUserDetailService implements UserDetailsService {
 
-  private final UserRepository userRepository;
+  private final UserService userService;
 
   @Override
   public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-    userRepository.findAll().forEach(System.out::println);
-    System.out.println(userRepository.findByUsername(username));
-    UserEntity user = userRepository.findByUsername(username)
-        .orElseThrow(() -> new UsernameNotFoundException("User " + username + "isn't found!"));
+    UserEntity user = userService.findUserByUsername(username);
 
     return UserPrincipal.builder()
         .id(user.getId())
