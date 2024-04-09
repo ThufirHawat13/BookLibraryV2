@@ -1,3 +1,4 @@
+------------------------------------------------
 CREATE TABLE library_user
 (
     id      BIGINT AUTO_INCREMENT PRIMARY KEY,
@@ -7,7 +8,9 @@ CREATE TABLE library_user
 
 INSERT INTO library_user (name, surname)
 VALUES ('John', 'Doe');
+------------------------------------------------
 
+------------------------------------------------
 CREATE TABLE book
 (
     id              BIGINT AUTO_INCREMENT PRIMARY KEY,
@@ -19,9 +22,9 @@ CREATE TABLE book
 
 INSERT INTO book (book_name, author, year_of_writing)
 VALUES ('Java Core Guide', 'Frank Foe', 2022);
+------------------------------------------------
 
-
-
+------------------------------------------------
 CREATE TABLE user_entity
 (
     id       BIGINT AUTO_INCREMENT PRIMARY KEY,
@@ -32,10 +35,10 @@ CREATE TABLE user_entity
 
 INSERT INTO user_entity (username, password, role)
 VALUES ('user', '$2a$12$OveaPkOk6QEIwRno62QPVubis1gE8cWn3DXTGzTTEWgySRQm0328u', 'ROLE_USER');
---password: test
+--password: user
 
 INSERT INTO user_entity (username, password, role)
 VALUES ('admin', '$2a$12$YU5bo90RuEH8lOgKXPhoXOI3hjQd2CsKwMsQ0IvSrCVVYEDXPV/Xi', 'ROLE_ADMIN');
 --passwrod: admin
-
+------------------------------------------------
 

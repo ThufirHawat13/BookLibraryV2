@@ -12,11 +12,11 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class JwtIssuer {
+public class JwtCreator {
 
   private final JwtProperties properties;
 
-  public String issue(int userId, String username, List<String> roles) {
+  public String create(int userId, String username, List<String> roles) {
     return JWT.create()
         .withSubject(String.valueOf(userId))
         .withExpiresAt(Instant.now().plus(Duration.of(1, ChronoUnit.DAYS)))
