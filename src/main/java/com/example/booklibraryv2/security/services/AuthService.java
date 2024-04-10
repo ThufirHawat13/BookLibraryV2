@@ -27,7 +27,7 @@ public class AuthService {
 
     UserPrincipal principal = (UserPrincipal) authentication.getPrincipal();
 
-    String token = jwtCreator.create(1, principal.getUsername(),
+    String token = jwtCreator.create(principal.getId(), principal.getUsername(),
         principal.getAuthorities().stream()
             .map(GrantedAuthority::getAuthority)
             .collect(Collectors.toList()));
