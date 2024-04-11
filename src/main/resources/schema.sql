@@ -34,11 +34,11 @@ CREATE TABLE user_entity
 );
 
 INSERT INTO user_entity (username, password, role)
-VALUES ('user', '$2a$12$OveaPkOk6QEIwRno62QPVubis1gE8cWn3DXTGzTTEWgySRQm0328u', 'ROLE_USER');
+VALUES ('user', '$2a$12$OveaPkOk6QEIwRno62QPVubis1gE8cWn3DXTGzTTEWgySRQm0328u', 'USER');
 --password: user
 
 INSERT INTO user_entity (username, password, role)
-VALUES ('admin', '$2a$12$YU5bo90RuEH8lOgKXPhoXOI3hjQd2CsKwMsQ0IvSrCVVYEDXPV/Xi', 'ROLE_ADMIN');
+VALUES ('admin', '$2a$12$YU5bo90RuEH8lOgKXPhoXOI3hjQd2CsKwMsQ0IvSrCVVYEDXPV/Xi', 'ADMIN');
 --passwrod: admin
 ------------------------------------------------
 

@@ -1,6 +1,6 @@
 package com.example.booklibraryv2.security.services;
 
-import com.example.booklibraryv2.security.jwt.JwtCreator;
+import com.example.booklibraryv2.security.jwt.JwtIssuer;
 import com.example.booklibraryv2.security.models.LoginResponse;
 import com.example.booklibraryv2.security.models.userPrincipal.UserPrincipal;
 import java.util.stream.Collectors;
@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service;
 public class AuthService {
 
   private final AuthenticationManager authenticationManager;
-  private final JwtCreator jwtCreator;
+  private final JwtIssuer jwtIssuer;
 
   public LoginResponse attemptLogin(String username, String password) {
     Authentication authentication = authenticationManager.authenticate(
@@ -27,7 +27,7 @@ public class AuthService {
 
     UserPrincipal principal = (UserPrincipal) authentication.getPrincipal();
 
-    String token = jwtCreator.create(principal.getId(), principal.getUsername(),
+    String token = jwtIssuer.issue(principal.getId(), principal.getUsername(),
         principal.getAuthorities().stream()
             .map(GrantedAuthority::getAuthority)
             .collect(Collectors.toList()));
