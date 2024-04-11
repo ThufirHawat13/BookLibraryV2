@@ -17,8 +17,6 @@ public class UserService {
     UserEntity user = userRepository.findByUsername(username).orElseThrow(
         () -> new UsernameNotFoundException("User " + username + "isn't found!"));
 
-    user.setRole("ROLE_" + Role.valueOf(user.getRole()));
-
     return user;
   }
 }

@@ -3,6 +3,8 @@ package com.example.booklibraryv2.security.entitites;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -25,6 +27,7 @@ public class UserEntity {
   @JsonIgnore
   @Column(name = "password")
   private String password;
+  @Enumerated(EnumType.STRING)
   @Column(name = "role")
-  private String role;
+  private Role role;
 }

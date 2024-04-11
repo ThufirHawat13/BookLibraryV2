@@ -1,5 +1,6 @@
 package com.example.booklibraryv2.security.configs;
 
+import com.example.booklibraryv2.security.entitites.Role;
 import com.example.booklibraryv2.security.jwt.JwtAuthenticationFilter;
 import com.example.booklibraryv2.security.services.CustomUserDetailService;
 import lombok.RequiredArgsConstructor;
@@ -44,18 +45,18 @@ public class WebSecurityConfig {
             .requestMatchers("/error", "/auth/login")
             .permitAll()
             .requestMatchers(HttpMethod.POST, BOOKS_ENDPOINT + "/add")
-            .hasRole("ADMIN")
+            .hasRole(Role.ADMIN.name())
             .requestMatchers(HttpMethod.PATCH, BOOKS_ENDPOINT + "/update")
-            .hasRole("ADMIN")
+            .hasRole(Role.ADMIN.name())
             .requestMatchers(HttpMethod.DELETE, BOOKS_ENDPOINT + "/delete")
-            .hasRole("ADMIN")
+            .hasRole(Role.ADMIN.name())
             .requestMatchers(HttpMethod.POST, LIBRARY_USER_ENDPOINT + "/add")
-            .hasRole("ADMIN")
+            .hasRole(Role.ADMIN.name())
             .requestMatchers(HttpMethod.PATCH, LIBRARY_USER_ENDPOINT + "/update")
-            .hasRole("ADMIN")
+            .hasRole(Role.ADMIN.name())
             .requestMatchers(HttpMethod.DELETE, LIBRARY_USER_ENDPOINT + "/delete")
-            .hasRole("ADMIN")
-            .anyRequest().hasAnyRole("ADMIN", "USER"));
+            .hasRole(Role.ADMIN.name())
+            .anyRequest().hasAnyRole(Role.ADMIN.name(), Role.USER.name()));
 
     return http.build();
   }
