@@ -16,4 +16,5 @@ spring:
 
 security:
   jwt:
-    secret-key: secretkeyfortestchangeitifyouneed
+    access-token-secret-key: secretkeyfortestchangeitifyouneed
+    refresh-token-secret-key: refreshsecretkeyfortestchangeitifyouneed

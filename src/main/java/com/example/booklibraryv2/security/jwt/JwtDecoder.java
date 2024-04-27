@@ -13,8 +13,14 @@ public class JwtDecoder {
 
   private final JwtProperties jwtProperties;
 
-  public DecodedJWT decode(String token) {
-    return JWT.require(Algorithm.HMAC256(jwtProperties.getSecretKey()))
+  public DecodedJWT decodeJwt(String token) {
+    return JWT.require(Algorithm.HMAC256(jwtProperties.getAccessTokenSecretKey()))
+        .build()
+        .verify(token);
+  }
+
+  public DecodedJWT decodeRefreshToken(String token) {
+    return JWT.require(Algorithm.HMAC256(jwtProperties.getRefreshTokenSecretKey()))
         .build()
         .verify(token);
   }

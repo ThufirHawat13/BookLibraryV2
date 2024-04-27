@@ -2,6 +2,7 @@ package com.example.booklibraryv2.security.configs;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
@@ -11,5 +12,6 @@ import org.springframework.context.annotation.Configuration;
 @ConfigurationProperties("security.jwt")
 public class JwtProperties {
 
-  private String secretKey;
+  private String accessTokenSecretKey;
+  private String refreshTokenSecretKey;
 }

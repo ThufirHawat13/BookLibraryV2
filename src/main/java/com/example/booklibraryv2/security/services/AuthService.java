@@ -27,13 +27,16 @@ public class AuthService {
 
     UserPrincipal principal = (UserPrincipal) authentication.getPrincipal();
 
-    String token = jwtIssuer.issue(principal.getId(), principal.getUsername(),
+    String accessToken = jwtIssuer.issueJwt(principal.getId(), principal.getUsername(),
         principal.getAuthorities().stream()
             .map(GrantedAuthority::getAuthority)
             .collect(Collectors.toList()));
 
+    String refreshToken = jwtIssuer.issueRefreshToken();
+
     return LoginResponse.builder()
-        .accessToken(token)
+        .accessToken(accessToken)
+        .refreshToken(refreshToken)
         .build();
   }
 

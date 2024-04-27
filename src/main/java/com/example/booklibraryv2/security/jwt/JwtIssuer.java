@@ -16,12 +16,18 @@ public class JwtIssuer {
 
   private final JwtProperties properties;
 
-  public String issue(Long userId, String username, List<String> roles) {
+  public String issueJwt(Long userId, String username, List<String> roles) {
     return JWT.create()
         .withSubject(String.valueOf(userId))
-        .withExpiresAt(Instant.now().plus(Duration.of(1, ChronoUnit.DAYS)))
+        .withExpiresAt(Instant.now().plus(Duration.of(30, ChronoUnit.MINUTES)))
         .withClaim("u", username)
         .withClaim("a", roles)
-        .sign(Algorithm.HMAC256(properties.getSecretKey()));
+        .sign(Algorithm.HMAC256(properties.getAccessTokenSecretKey()));
+  }
+
+  public String issueRefreshToken() {
+    return JWT.create()
+        .withExpiresAt(Instant.now().plus(Duration.of(1, ChronoUnit.DAYS)))
+        .sign(Algorithm.HMAC256(properties.getRefreshTokenSecretKey()));
   }
 }
