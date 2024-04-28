@@ -27,10 +27,11 @@ VALUES ('Java Core Guide', 'Frank Foe', 2022);
 ------------------------------------------------
 CREATE TABLE user_entity
 (
-    id       BIGINT AUTO_INCREMENT PRIMARY KEY,
-    username VARCHAR(50) UNIQUE NOT NULL,
-    password VARCHAR(200) NOT NULL,
-    role     VARCHAR(16) NOT NULL
+    id               BIGINT AUTO_INCREMENT PRIMARY KEY,
+    username         VARCHAR(50) UNIQUE NOT NULL,
+    password         VARCHAR(200)       NOT NULL,
+    role             VARCHAR(16)        NOT NULL,
+    refresh_token_id BIGINT REFERENCES refresh_token (id)
 );
 
 INSERT INTO user_entity (username, password, role)
@@ -42,3 +43,9 @@ VALUES ('admin', '$2a$12$YU5bo90RuEH8lOgKXPhoXOI3hjQd2CsKwMsQ0IvSrCVVYEDXPV/Xi',
 --passwrod: admin
 ------------------------------------------------
 
+------------------------------------------------
+CREATE TABLE refresh_token
+(
+    id    BIGINT AUTO_INCREMENT PRIMARY KEY,
+    token VARCHAR(200)
+);

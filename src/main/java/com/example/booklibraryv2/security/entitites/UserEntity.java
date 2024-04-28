@@ -8,6 +8,8 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -30,4 +32,8 @@ public class UserEntity {
   @Enumerated(EnumType.STRING)
   @Column(name = "role")
   private Role role;
+  @OneToOne
+  @JoinColumn(name = "refresh_token_id",
+  referencedColumnName = "id")
+  private RefreshTokenEntity refreshToken;
 }
