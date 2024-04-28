@@ -44,6 +44,8 @@ public class WebSecurityConfig {
         request
             .requestMatchers("/error", "/auth/login")
             .permitAll()
+            .requestMatchers("/auth/refresh-tokens")
+            .authenticated()
             .requestMatchers(HttpMethod.POST, BOOKS_ENDPOINT + "/add")
             .hasRole(Role.ADMIN.name())
             .requestMatchers(HttpMethod.PATCH, BOOKS_ENDPOINT + "/update")

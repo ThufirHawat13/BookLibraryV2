@@ -32,7 +32,7 @@ public class AuthService {
             .map(GrantedAuthority::getAuthority)
             .collect(Collectors.toList()));
 
-    String refreshToken = jwtIssuer.issueRefreshToken();
+    String refreshToken = jwtIssuer.issueRefreshToken(principal.getId(), principal.getUsername());
 
     return LoginResponse.builder()
         .accessToken(accessToken)
