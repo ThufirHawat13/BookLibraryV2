@@ -5,13 +5,17 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
 @Data
 @RequiredArgsConstructor
 @AllArgsConstructor
+@Builder
 @Entity(name = "refresh_key")
 public class RefreshTokenEntity {
 
@@ -21,4 +25,8 @@ public class RefreshTokenEntity {
   private long id;
   @Column(name = "token")
   private String token;
+  @OneToOne
+  @JoinColumn(name = "user_id",
+  referencedColumnName = "id")
+  private UserEntity user;
 }

@@ -19,4 +19,8 @@ public class UserService {
 
     return user;
   }
+
+  public UserEntity findById(long id) {
+    return userRepository.findById(id).orElse(null);
+  }
 }

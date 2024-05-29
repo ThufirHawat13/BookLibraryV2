@@ -32,8 +32,4 @@ public class UserEntity {
   @Enumerated(EnumType.STRING)
   @Column(name = "role")
   private Role role;
-  @OneToOne
-  @JoinColumn(name = "refresh_token_id",
-  referencedColumnName = "id")
-  private RefreshTokenEntity refreshToken;
 }
