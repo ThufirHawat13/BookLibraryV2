@@ -8,7 +8,6 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class BookMapper {
 
-
   public static BookDTO convertToBookDTO(Book book) {
     BookDTO result = new BookDTO();
 

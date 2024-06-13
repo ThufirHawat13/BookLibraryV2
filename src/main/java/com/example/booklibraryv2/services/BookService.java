@@ -4,7 +4,6 @@ import com.example.booklibraryv2.entities.Book;
 import com.example.booklibraryv2.repositories.BookRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -12,8 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class BookService {
-
-  @Autowired
   private final BookRepository bookRepository;
 
   public List<Book> getAll() {

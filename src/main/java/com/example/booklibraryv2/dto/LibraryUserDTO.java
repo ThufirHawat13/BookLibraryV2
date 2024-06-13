@@ -5,7 +5,6 @@ import lombok.Data;
 
 @Data
 public class LibraryUserDTO {
-
   private int id;
   private String name;
   private String surname;

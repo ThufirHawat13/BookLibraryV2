@@ -12,7 +12,6 @@ import lombok.Data;
 @Entity(name = "library_user")
 @Data
 public class LibraryUser {
-
   @Id
   @Column(name = "id")
   @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -10,7 +10,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 @Getter
 @Builder
 public class UserPrincipal implements UserDetails {
-
   private final Long id;
   private final String username;
   @JsonIgnore

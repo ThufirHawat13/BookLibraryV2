@@ -10,7 +10,6 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public class JwtDecoder {
-
   private final JwtProperties jwtProperties;
 
   public DecodedJWT decodeJwt(String token) {

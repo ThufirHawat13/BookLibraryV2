@@ -3,7 +3,6 @@ package com.example.booklibraryv2.security.models.userPrincipal;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 
 public class UserPrincipalAuthenticationToken extends AbstractAuthenticationToken {
-
   private final UserPrincipal userPrincipal;
 
   public UserPrincipalAuthenticationToken(UserPrincipal userPrincipal) {

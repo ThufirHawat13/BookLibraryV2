@@ -22,7 +22,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class WebSecurityConfig {
-
   private final JwtAuthenticationFilter jwtAuthenticationFilter;
   private final CustomUserDetailService userDetailsService;
   private final String BOOKS_ENDPOINT = "/books";

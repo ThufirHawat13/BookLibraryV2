@@ -13,7 +13,6 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public class CustomUserDetailService implements UserDetailsService {
-
   private final UserService userService;
 
   @Override

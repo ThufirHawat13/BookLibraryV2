@@ -19,7 +19,6 @@ import lombok.RequiredArgsConstructor;
 @AllArgsConstructor
 @Entity(name = "user_entity")
 public class UserEntity {
-
   @Id
   @Column(name = "id")
   @GeneratedValue(strategy = GenerationType.IDENTITY)

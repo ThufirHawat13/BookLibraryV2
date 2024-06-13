@@ -14,7 +14,6 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public class JwtIssuer {
-
   private final JwtProperties properties;
 
   public String issueJwt(Long userId, String username, List<String> roles) {

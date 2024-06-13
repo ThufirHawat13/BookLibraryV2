@@ -16,10 +16,8 @@ import org.springframework.web.filter.OncePerRequestFilter;
 @Component
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
-
   private final JwtDecoder jwtDecoder;
   private final JwtToPrincipalConverter jwtToPrincipalConverter;
-
 
   @Override
   protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,

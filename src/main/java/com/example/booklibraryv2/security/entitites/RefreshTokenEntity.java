@@ -18,7 +18,6 @@ import lombok.RequiredArgsConstructor;
 @Builder
 @Entity(name = "refresh_key")
 public class RefreshTokenEntity {
-
   @Id
   @Column(name = "id")
   @GeneratedValue(strategy = GenerationType.IDENTITY)

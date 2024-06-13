@@ -4,7 +4,6 @@ import com.example.booklibraryv2.entities.LibraryUser;
 import com.example.booklibraryv2.repositories.LibraryUserRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class LibraryUserService {
 
-  @Autowired
   private final LibraryUserRepository libraryUserRepository;
 
   public List<LibraryUser> getAll() {

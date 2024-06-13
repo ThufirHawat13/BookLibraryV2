@@ -22,8 +22,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RequestMapping("/libraryUsers")
 public class LibraryUserController {
-
-  @Autowired
   private final LibraryUserService libraryUserService;
 
   @GetMapping
