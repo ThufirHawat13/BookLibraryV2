@@ -31,4 +31,6 @@ public class UserEntity {
   @Enumerated(EnumType.STRING)
   @Column(name = "role")
   private Role role;
+  @OneToOne(mappedBy = "user")
+  private RefreshTokenEntity refreshToken;
 }

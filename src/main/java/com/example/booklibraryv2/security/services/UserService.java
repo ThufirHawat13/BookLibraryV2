@@ -1,6 +1,5 @@
 package com.example.booklibraryv2.security.services;
 
-import com.example.booklibraryv2.security.entitites.Role;
 import com.example.booklibraryv2.security.entitites.UserEntity;
 import com.example.booklibraryv2.security.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -17,9 +16,5 @@ public class UserService {
         () -> new UsernameNotFoundException("User " + username + "isn't found!"));
 
     return user;
-  }
-
-  public UserEntity findById(long id) {
-    return userRepository.findById(id).orElse(null);
   }
 }

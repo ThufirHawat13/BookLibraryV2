@@ -3,7 +3,9 @@ package com.example.booklibraryv2.security.controllers;
 import com.example.booklibraryv2.security.models.LoginRequest;
 import com.example.booklibraryv2.security.models.LoginResponse;
 import com.example.booklibraryv2.security.services.AuthService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,7 +25,7 @@ public class AuthController {
   }
 
   @GetMapping("/refresh-tokens")
-  public LoginResponse refreshTokens() {
-    return authService.tryToRefreshTokens();
+  public LoginResponse refreshTokens(HttpServletRequest httpServletRequest) {
+    return authService.tryToRefreshTokens(httpServletRequest);
   }
 }
