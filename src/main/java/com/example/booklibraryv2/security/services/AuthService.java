@@ -6,18 +6,15 @@ import com.example.booklibraryv2.security.jwt.JwtIssuer;
 import com.example.booklibraryv2.security.models.LoginResponse;
 import com.example.booklibraryv2.security.models.userPrincipal.UserPrincipal;
 import com.example.booklibraryv2.security.repositories.RefreshTokenRepository;
-import com.example.booklibraryv2.security.repositories.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,38 +25,41 @@ public class AuthService {
 
   private final AuthenticationManager authenticationManager;
   private final JwtIssuer jwtIssuer;
-  private final RefreshTokenRepository refreshTokenRepository;
-  private final UserRepository userRepository;
+  private final RefreshTokenService refreshTokenService;
+  private final UserService userService;
 
-  @Transactional
   public LoginResponse attemptLogin(String username, String password) {
-    Authentication authentication = authenticationManager.authenticate(
-        new UsernamePasswordAuthenticationToken(username, password));
+    UserPrincipal principal = getUserPrincipalFromSecurityContext(authenticationManager
+        .authenticate(new UsernamePasswordAuthenticationToken(username, password)));
 
-    SecurityContextHolder.getContext().setAuthentication(authentication);
+    String refreshToken = issueRefreshToken(principal);
 
-    UserPrincipal principal = (UserPrincipal) authentication.getPrincipal();
-    UserEntity user = userRepository.findById(principal.getId())
-        .orElseThrow(() -> new RuntimeException("User with id %d isn't found!"
-            .formatted(principal.getId())));
-
-    String accessToken = jwtIssuer.issueJwt(principal.getId(), principal.getUsername(),
-        principal.getAuthorities().stream()
-            .map(GrantedAuthority::getAuthority)
-            .collect(Collectors.toList()));
-
-    String refreshToken = jwtIssuer.issueRefreshToken(user.getId(), user.getUsername());
-
-    refreshTokenRepository.save(RefreshTokenEntity.builder()
-        .id(user.getId())
-        .user(user)
+    refreshTokenService.save(RefreshTokenEntity.builder()
+        .user(userService.findById(principal.getId()))
         .token(refreshToken)
         .build());
 
     return LoginResponse.builder()
-        .accessToken(accessToken)
+        .accessToken(issueAccessToken(principal))
         .refreshToken(refreshToken)
         .build();
+  }
+
+  private UserPrincipal getUserPrincipalFromSecurityContext(Authentication authentication) {
+    SecurityContextHolder.getContext().setAuthentication(authentication);
+
+    return (UserPrincipal) authentication.getPrincipal();
+  }
+
+  private String issueAccessToken(UserPrincipal principal) {
+    return jwtIssuer.issueJwt(principal.getId(), principal.getUsername(),
+        principal.getAuthorities().stream()
+            .map(GrantedAuthority::getAuthority)
+            .collect(Collectors.toList()));
+  }
+
+  private String issueRefreshToken(UserPrincipal principal) {
+    return jwtIssuer.issueRefreshToken(principal.getId(), principal.getUsername());
   }
 
   @Transactional
@@ -68,9 +68,7 @@ public class AuthService {
         .getAuthentication()
         .getPrincipal();
 
-    UserEntity user = userRepository.findById(userPrincipal.getId())
-        .orElseThrow(() -> new RuntimeException("User with id = %d isn't found!"
-            .formatted(userPrincipal.getId())));
+    UserEntity user = userService.findById(userPrincipal.getId());
 
     RefreshTokenEntity refreshTokenEntity;
     String refreshToken = jwtIssuer.issueRefreshToken(userPrincipal.getId(),
