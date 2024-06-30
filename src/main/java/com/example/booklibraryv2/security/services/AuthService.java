@@ -1,11 +1,9 @@
 package com.example.booklibraryv2.security.services;
 
 import com.example.booklibraryv2.security.entitites.RefreshTokenEntity;
-import com.example.booklibraryv2.security.entitites.UserEntity;
 import com.example.booklibraryv2.security.jwt.JwtIssuer;
 import com.example.booklibraryv2.security.models.LoginResponse;
 import com.example.booklibraryv2.security.models.userPrincipal.UserPrincipal;
-import com.example.booklibraryv2.security.repositories.RefreshTokenRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -68,8 +66,6 @@ public class AuthService {
         .getAuthentication()
         .getPrincipal();
 
-    UserEntity user = userService.findById(userPrincipal.getId());
-
     RefreshTokenEntity refreshTokenEntity;
     String refreshToken = jwtIssuer.issueRefreshToken(userPrincipal.getId(),
         userPrincipal.getUsername());
@@ -77,7 +73,7 @@ public class AuthService {
     //TODO сделать двунаправленную связь с энтитей юзер и юзать просто файнд бай айди у юзера,
     // потом уже получать токен с юзера + добавить чек рефреш токена в цепочке
 
-    if (((refreshTokenEntity = user.getRefreshToken()) != null)
+    if (((refreshTokenEntity = userService.findById(userPrincipal.getId()).getRefreshToken()) != null)
         && extractTokenFromHeader(httpServletRequest).equals(refreshTokenEntity.getToken())) {
       refreshTokenEntity.setToken(refreshToken);
     } else {
