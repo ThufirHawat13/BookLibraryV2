@@ -18,6 +18,12 @@ public class LibraryUserService {
     return libraryUserRepository.findAll();
   }
 
+  public LibraryUser findById(Integer id) {
+    //TODO Добавить выброс исключения вместо налла
+    return libraryUserRepository.findById(id)
+        .orElse(null);
+  }
+
   public List<LibraryUser> findByNameContains(String searchQuery) {
     return libraryUserRepository.findByNameContains(searchQuery);
   }

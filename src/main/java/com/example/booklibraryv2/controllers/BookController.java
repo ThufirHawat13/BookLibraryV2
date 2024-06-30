@@ -6,7 +6,6 @@ import com.example.booklibraryv2.services.BookService;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -25,10 +24,15 @@ public class BookController {
   private final BookService bookService;
 
   @GetMapping
-  public List<BookDTO> index() {
+  public List<BookDTO> getAll() {
     return bookService.getAll().stream()
         .map(BookMapper::convertToBookDTO)
         .collect(Collectors.toList());
+  }
+
+  @GetMapping("/{id}")
+  public BookDTO getById(@PathVariable Integer id) {
+    return BookMapper.convertToBookDTO(bookService.findById(id));
   }
 
   @GetMapping("/find/{searchQuery}")
@@ -42,7 +46,7 @@ public class BookController {
   public ResponseEntity<HttpStatus> addNew(@RequestBody BookDTO bookDTO) {
     bookService.save(BookMapper.convertToBook(bookDTO));
 
-    return ResponseEntity.ok(HttpStatus.OK);
+    return ResponseEntity.ok(HttpStatus.CREATED);
   }
 
   @PatchMapping("/update")

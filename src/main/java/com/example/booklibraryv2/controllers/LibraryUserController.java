@@ -6,7 +6,6 @@ import com.example.booklibraryv2.services.LibraryUserService;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -25,14 +24,19 @@ public class LibraryUserController {
   private final LibraryUserService libraryUserService;
 
   @GetMapping
-  public List<com.example.booklibraryv2.dto.LibraryUserDTO> index() {
+  public List<LibraryUserDTO> getAll() {
     return libraryUserService.getAll().stream()
         .map(LibraryUserMapper::convertToLibraryUserDTO)
         .collect(Collectors.toList());
   }
 
+  @GetMapping("/{id}")
+  public LibraryUserDTO getById(@PathVariable Integer id) {
+    return LibraryUserMapper.convertToLibraryUserDTO(libraryUserService.findById(id));
+  }
+
   @GetMapping("/find/{searchQuery}")
-  public List<com.example.booklibraryv2.dto.LibraryUserDTO> findByNameContains(@PathVariable String searchQuery) {
+  public List<LibraryUserDTO> findByNameContains(@PathVariable String searchQuery) {
     return libraryUserService.findByNameContains(searchQuery).stream()
         .map(LibraryUserMapper::convertToLibraryUserDTO)
         .collect(Collectors.toList());
@@ -42,7 +46,7 @@ public class LibraryUserController {
   public ResponseEntity<HttpStatus> addNew(@RequestBody LibraryUserDTO libraryUserDTO) {
     libraryUserService.save(LibraryUserMapper.convertToLibraryUser(libraryUserDTO));
 
-    return ResponseEntity.ok(HttpStatus.OK);
+    return ResponseEntity.ok(HttpStatus.CREATED);
   }
 
   @PatchMapping("/update")

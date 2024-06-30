@@ -17,6 +17,12 @@ public class BookService {
     return bookRepository.findAll();
   }
 
+  public Book findById(Integer id) {
+    //TODO Добавить выброс исключения вместо налла
+    return bookRepository.findById(id)
+        .orElse(null);
+  }
+
   public List<Book> findByNameContains(String searchQuery) {
     return bookRepository.findByNameContains(searchQuery);
   }
