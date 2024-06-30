@@ -1,5 +1,6 @@
 package com.example.booklibraryv2.security.services;
 
+import com.example.booklibraryv2.exceptions.ServiceException;
 import com.example.booklibraryv2.security.entitites.RefreshTokenEntity;
 import com.example.booklibraryv2.security.jwt.JwtIssuer;
 import com.example.booklibraryv2.security.models.LoginResponse;
@@ -61,26 +62,20 @@ public class AuthService {
   }
 
   @Transactional
-  public LoginResponse tryToRefreshTokens(HttpServletRequest httpServletRequest) {
+  public LoginResponse tryToRefreshTokens(HttpServletRequest httpServletRequest)
+      throws ServiceException {
     UserPrincipal userPrincipal = (UserPrincipal) SecurityContextHolder.getContext()
         .getAuthentication()
         .getPrincipal();
 
-    RefreshTokenEntity refreshTokenEntity;
+    RefreshTokenEntity refreshTokenEntity = userService.findById(userPrincipal.getId())
+        .getRefreshToken();
     String refreshToken = jwtIssuer.issueRefreshToken(userPrincipal.getId(),
         userPrincipal.getUsername());
 
-    //TODO сделать двунаправленную связь с энтитей юзер и юзать просто файнд бай айди у юзера,
-    // потом уже получать токен с юзера + добавить чек рефреш токена в цепочке
-
-    if (((refreshTokenEntity = userService.findById(userPrincipal.getId()).getRefreshToken()) != null)
-        && extractTokenFromHeader(httpServletRequest).equals(refreshTokenEntity.getToken())) {
-      refreshTokenEntity.setToken(refreshToken);
-    } else {
-      return LoginResponse.builder()
-          .accessToken("")
-          .refreshToken("")
-          .build();
+    if (!checkRefreshTokenFromRequestAndTokenFromRepositoryEquality(
+        extractTokenFromHeader(httpServletRequest),  refreshTokenEntity)) {
+      throw new ServiceException("Refresh token isn't valid!");
     }
 
     return LoginResponse.builder()
@@ -93,7 +88,13 @@ public class AuthService {
   }
 
   private String extractTokenFromHeader(HttpServletRequest httpServletRequest) {
-   return httpServletRequest.getHeader(HttpHeaders.AUTHORIZATION).substring(7);
+    return httpServletRequest.getHeader(HttpHeaders.AUTHORIZATION).substring(7);
+  }
+
+  private boolean checkRefreshTokenFromRequestAndTokenFromRepositoryEquality(
+      String tokenForEqualityCheck, RefreshTokenEntity refreshTokenEntity) {
+    return ((refreshTokenEntity != null)
+        && tokenForEqualityCheck.equals(refreshTokenEntity.getToken()));
   }
 
 }
