@@ -1,6 +1,7 @@
 package com.example.booklibraryv2.services;
 
 import com.example.booklibraryv2.entities.LibraryUser;
+import com.example.booklibraryv2.exceptions.ServiceException;
 import com.example.booklibraryv2.repositories.LibraryUserRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -19,9 +20,9 @@ public class LibraryUserService {
   }
 
   public LibraryUser findById(Integer id) {
-    //TODO Добавить выброс исключения вместо налла
     return libraryUserRepository.findById(id)
-        .orElse(null);
+        .orElseThrow(() -> new ServiceException("Library user with id = %d isn't found!"
+            .formatted(id)));
   }
 
   public List<LibraryUser> findByNameContains(String searchQuery) {

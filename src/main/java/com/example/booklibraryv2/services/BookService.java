@@ -1,6 +1,7 @@
 package com.example.booklibraryv2.services;
 
 import com.example.booklibraryv2.entities.Book;
+import com.example.booklibraryv2.exceptions.ServiceException;
 import com.example.booklibraryv2.repositories.BookRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -18,9 +19,8 @@ public class BookService {
   }
 
   public Book findById(Integer id) {
-    //TODO Добавить выброс исключения вместо налла
     return bookRepository.findById(id)
-        .orElse(null);
+        .orElseThrow(() -> new ServiceException("Book with id = %d isn't found!".formatted(id)));
   }
 
   public List<Book> findByNameContains(String searchQuery) {
