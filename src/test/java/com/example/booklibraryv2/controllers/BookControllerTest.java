@@ -3,12 +3,17 @@ package com.example.booklibraryv2.controllers;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.example.booklibraryv2.entities.Book;
 import com.example.booklibraryv2.services.BookService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -86,6 +91,42 @@ class BookControllerTest {
         .findByNameContains("Book");
   }
 
+  @Test
+  void addNewShouldCreateSuccessful() throws Exception {
+    mvc.perform(post("/books/add")
+            .content(asJsonString(getTestBook()))
+            .contentType(MediaType.APPLICATION_JSON)
+        .accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk());
+
+    verify(bookService, times(1))
+        .save(getTestBook());
+  }
+
+  @Test
+  void updateShouldUpdateSuccessful() throws Exception {
+    mvc.perform(patch("/books/update")
+        .content(asJsonString(getTestBook()))
+        .contentType(MediaType.APPLICATION_JSON)
+        .accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk());
+
+    verify(bookService, times(1))
+        .update(getTestBook());
+  }
+
+  @Test
+  void removeShouldRemoveSuccessful() throws Exception {
+    mvc.perform(delete("/books/remove")
+        .content(asJsonString(getTestBook()))
+        .contentType(MediaType.APPLICATION_JSON)
+        .accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk());
+
+    verify(bookService, times(1))
+        .delete(getTestBook());
+  }
+
   private Book getTestBook() {
     return Book.builder()
         .id(1)
@@ -94,5 +135,13 @@ class BookControllerTest {
         .holder(null)
         .yearOfWriting(1111)
         .build();
+  }
+
+  private String asJsonString(Object obj) {
+    try {
+      return new ObjectMapper().writeValueAsString(obj);
+    } catch (JsonProcessingException e) {
+      throw new RuntimeException(e);
+    }
   }
 }
