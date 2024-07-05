@@ -106,6 +106,11 @@ class BookControllerTest {
   }
 
   @Test
+  void  createShouldNameIsNotValid() throws Exception {
+
+  }
+
+  @Test
   void updateShouldUpdateSuccessful() throws Exception {
     mvc.perform(patch(ENDPOINT)
         .content(asJsonString(getTestBookDto()))

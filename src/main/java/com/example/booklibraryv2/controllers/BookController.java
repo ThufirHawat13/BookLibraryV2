@@ -3,6 +3,7 @@ package com.example.booklibraryv2.controllers;
 import com.example.booklibraryv2.dto.BookDTO;
 import com.example.booklibraryv2.mappers.BookMapper;
 import com.example.booklibraryv2.services.BookService;
+import jakarta.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -43,7 +44,7 @@ public class BookController {
   }
 
   @PostMapping()
-  public ResponseEntity<HttpStatus> create(@RequestBody BookDTO bookDTO) {
+  public ResponseEntity<HttpStatus> create(@RequestBody @Valid BookDTO bookDTO) {
     bookService.save(BookMapper.convertToBook(bookDTO));
 
     return ResponseEntity
