@@ -43,8 +43,8 @@ public class LibraryUserController {
         .collect(Collectors.toList());
   }
 
-  @PostMapping("/add")
-  public ResponseEntity<HttpStatus> addNew(@RequestBody LibraryUserDTO libraryUserDTO) {
+  @PostMapping()
+  public ResponseEntity<HttpStatus> create(@RequestBody LibraryUserDTO libraryUserDTO) {
     libraryUserService.save(LibraryUserMapper.convertToLibraryUser(libraryUserDTO));
 
     return ResponseEntity
@@ -52,7 +52,7 @@ public class LibraryUserController {
         .build();
   }
 
-  @PatchMapping("/update")
+  @PatchMapping()
   public ResponseEntity<HttpStatus> update(@RequestBody LibraryUserDTO updatedLibraryUser) {
     libraryUserService.update(LibraryUserMapper.convertToLibraryUser(updatedLibraryUser));
 
@@ -61,8 +61,8 @@ public class LibraryUserController {
         .build();
   }
 
-  @DeleteMapping("/remove")
-  public ResponseEntity<HttpStatus> remove(@RequestBody LibraryUserDTO libraryUserForDelete) {
+  @DeleteMapping()
+  public ResponseEntity<HttpStatus> delete(@RequestBody LibraryUserDTO libraryUserForDelete) {
     libraryUserService.delete(LibraryUserMapper.convertToLibraryUser(libraryUserForDelete));
 
     return ResponseEntity

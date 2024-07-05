@@ -36,6 +36,7 @@ class BookControllerTest {
   private MockMvc mvc;
   @MockBean
   private BookService bookService;
+  private final String ENDPOINT = "/books";
 
   //TODO Добавить негтив кейсы после добавления валидации
 
@@ -44,7 +45,7 @@ class BookControllerTest {
     when(bookService.getAll())
         .thenReturn(List.of(getTestBook()));
 
-    mvc.perform(get("/books")
+    mvc.perform(get(ENDPOINT)
             .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$[0].id").value("1"))
@@ -62,7 +63,7 @@ class BookControllerTest {
     when(bookService.findById(1))
         .thenReturn(getTestBook());
 
-    mvc.perform(get("/books/1")
+    mvc.perform(get(ENDPOINT + "/1")
             .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.id").value("1"))
@@ -80,7 +81,7 @@ class BookControllerTest {
     when(bookService.findByNameContains("Book"))
         .thenReturn(List.of(getTestBook()));
 
-    mvc.perform(get("/books/find/Book")
+    mvc.perform(get(ENDPOINT + "/find/Book")
             .accept(MediaType.APPLICATION_JSON))
         .andExpect(jsonPath("$[0].id").value("1"))
         .andExpect(jsonPath("$[0].name").value("Book"))
@@ -93,8 +94,8 @@ class BookControllerTest {
   }
 
   @Test
-  void addNewShouldCreateSuccessful() throws Exception {
-    mvc.perform(post("/books/add")
+  void createShouldCreateSuccessful() throws Exception {
+    mvc.perform(post(ENDPOINT)
             .content(asJsonString(getTestBookDto()))
             .contentType(MediaType.APPLICATION_JSON)
         .accept(MediaType.APPLICATION_JSON))
@@ -106,7 +107,7 @@ class BookControllerTest {
 
   @Test
   void updateShouldUpdateSuccessful() throws Exception {
-    mvc.perform(patch("/books/update")
+    mvc.perform(patch(ENDPOINT)
         .content(asJsonString(getTestBookDto()))
         .contentType(MediaType.APPLICATION_JSON)
         .accept(MediaType.APPLICATION_JSON))
@@ -117,8 +118,8 @@ class BookControllerTest {
   }
 
   @Test
-  void removeShouldRemoveSuccessful() throws Exception {
-    mvc.perform(delete("/books/remove")
+  void deleteShouldDeleteSuccessful() throws Exception {
+    mvc.perform(delete(ENDPOINT)
         .content(asJsonString(getTestBookDto()))
         .contentType(MediaType.APPLICATION_JSON)
         .accept(MediaType.APPLICATION_JSON))

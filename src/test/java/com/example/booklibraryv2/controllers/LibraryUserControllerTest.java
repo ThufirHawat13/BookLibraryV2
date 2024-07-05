@@ -90,8 +90,8 @@ class LibraryUserControllerTest {
   }
 
   @Test
-  void addNewShouldCreateSuccessful() throws Exception {
-    mvc.perform(post(ENDPOINT + "/add")
+  void createShouldCreateSuccessful() throws Exception {
+    mvc.perform(post(ENDPOINT)
         .content(asJsonString(getTestLibraryUserDto()))
         .contentType(MediaType.APPLICATION_JSON)
         .accept(MediaType.APPLICATION_JSON))
@@ -103,7 +103,7 @@ class LibraryUserControllerTest {
 
   @Test
   void updateShouldUpdateSuccessful() throws Exception {
-    mvc.perform(patch(ENDPOINT + "/update")
+    mvc.perform(patch(ENDPOINT)
         .content(asJsonString(getTestLibraryUserDto()))
         .contentType(MediaType.APPLICATION_JSON)
         .accept(MediaType.APPLICATION_JSON))
@@ -114,8 +114,8 @@ class LibraryUserControllerTest {
   }
 
   @Test
-  void removeShouldDeleteSuccessful() throws Exception {
-    mvc.perform(delete(ENDPOINT + "/remove")
+  void deleteShouldDeleteSuccessful() throws Exception {
+    mvc.perform(delete(ENDPOINT)
         .content(asJsonString(getTestLibraryUserDto()))
         .contentType(MediaType.APPLICATION_JSON)
         .accept(MediaType.APPLICATION_JSON))

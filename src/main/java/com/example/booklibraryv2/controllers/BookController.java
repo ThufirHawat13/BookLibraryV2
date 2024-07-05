@@ -42,8 +42,8 @@ public class BookController {
         .collect(Collectors.toList());
   }
 
-  @PostMapping("/add")
-  public ResponseEntity<HttpStatus> addNew(@RequestBody BookDTO bookDTO) {
+  @PostMapping()
+  public ResponseEntity<HttpStatus> create(@RequestBody BookDTO bookDTO) {
     bookService.save(BookMapper.convertToBook(bookDTO));
 
     return ResponseEntity
@@ -51,7 +51,7 @@ public class BookController {
         .build();
   }
 
-  @PatchMapping("/update")
+  @PatchMapping()
   public ResponseEntity<HttpStatus> update(@RequestBody BookDTO updatedBook) {
     bookService.update(BookMapper.convertToBook(updatedBook));
 
@@ -60,8 +60,8 @@ public class BookController {
         .build();
   }
 
-  @DeleteMapping("/remove")
-  public ResponseEntity<HttpStatus> remove(@RequestBody BookDTO bookDTO) {
+  @DeleteMapping()
+  public ResponseEntity<HttpStatus> delete(@RequestBody BookDTO bookDTO) {
     bookService.delete(BookMapper.convertToBook(bookDTO));
 
     return ResponseEntity
