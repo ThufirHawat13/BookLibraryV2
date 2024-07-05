@@ -22,7 +22,7 @@ public class UserEntity {
   @Id
   @Column(name = "id")
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private long id;
+  private Long id;
   @Column(name = "username")
   private String username;
   @JsonIgnore
