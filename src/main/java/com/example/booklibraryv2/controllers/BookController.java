@@ -46,20 +46,26 @@ public class BookController {
   public ResponseEntity<HttpStatus> addNew(@RequestBody BookDTO bookDTO) {
     bookService.save(BookMapper.convertToBook(bookDTO));
 
-    return ResponseEntity.ok(HttpStatus.CREATED);
+    return ResponseEntity
+        .status(HttpStatus.CREATED)
+        .build();
   }
 
   @PatchMapping("/update")
   public ResponseEntity<HttpStatus> update(@RequestBody BookDTO updatedBook) {
     bookService.update(BookMapper.convertToBook(updatedBook));
 
-    return ResponseEntity.ok(HttpStatus.OK);
+    return ResponseEntity
+        .status(HttpStatus.OK)
+        .build();
   }
 
   @DeleteMapping("/remove")
   public ResponseEntity<HttpStatus> remove(@RequestBody BookDTO bookDTO) {
     bookService.delete(BookMapper.convertToBook(bookDTO));
 
-    return ResponseEntity.ok(HttpStatus.OK);
+    return ResponseEntity
+        .status(HttpStatus.OK)
+        .build();
   }
 }
