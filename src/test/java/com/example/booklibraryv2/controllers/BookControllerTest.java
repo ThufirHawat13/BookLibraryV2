@@ -10,6 +10,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.example.booklibraryv2.dto.BookDTO;
 import com.example.booklibraryv2.entities.Book;
 import com.example.booklibraryv2.services.BookService;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -94,10 +95,10 @@ class BookControllerTest {
   @Test
   void addNewShouldCreateSuccessful() throws Exception {
     mvc.perform(post("/books/add")
-            .content(asJsonString(getTestBook()))
+            .content(asJsonString(getTestBookDto()))
             .contentType(MediaType.APPLICATION_JSON)
         .accept(MediaType.APPLICATION_JSON))
-        .andExpect(status().isOk());
+        .andExpect(status().isCreated());
 
     verify(bookService, times(1))
         .save(getTestBook());
@@ -106,7 +107,7 @@ class BookControllerTest {
   @Test
   void updateShouldUpdateSuccessful() throws Exception {
     mvc.perform(patch("/books/update")
-        .content(asJsonString(getTestBook()))
+        .content(asJsonString(getTestBookDto()))
         .contentType(MediaType.APPLICATION_JSON)
         .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk());
@@ -118,7 +119,7 @@ class BookControllerTest {
   @Test
   void removeShouldRemoveSuccessful() throws Exception {
     mvc.perform(delete("/books/remove")
-        .content(asJsonString(getTestBook()))
+        .content(asJsonString(getTestBookDto()))
         .contentType(MediaType.APPLICATION_JSON)
         .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk());
@@ -129,6 +130,16 @@ class BookControllerTest {
 
   private Book getTestBook() {
     return Book.builder()
+        .id(1)
+        .name("Book")
+        .author("Author")
+        .holder(null)
+        .yearOfWriting(1111)
+        .build();
+  }
+
+  private BookDTO getTestBookDto() {
+    return BookDTO.builder()
         .id(1)
         .name("Book")
         .author("Author")
