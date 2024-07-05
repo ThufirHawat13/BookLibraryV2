@@ -19,8 +19,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/libraryUsers")
+@RequestMapping("/library-users")
 public class LibraryUserController {
+
   private final LibraryUserService libraryUserService;
 
   @GetMapping
@@ -46,21 +47,27 @@ public class LibraryUserController {
   public ResponseEntity<HttpStatus> addNew(@RequestBody LibraryUserDTO libraryUserDTO) {
     libraryUserService.save(LibraryUserMapper.convertToLibraryUser(libraryUserDTO));
 
-    return ResponseEntity.ok(HttpStatus.CREATED);
+    return ResponseEntity
+        .status(HttpStatus.CREATED)
+        .build();
   }
 
   @PatchMapping("/update")
   public ResponseEntity<HttpStatus> update(@RequestBody LibraryUserDTO updatedLibraryUser) {
     libraryUserService.update(LibraryUserMapper.convertToLibraryUser(updatedLibraryUser));
 
-    return ResponseEntity.ok(HttpStatus.OK);
+    return ResponseEntity
+        .status(HttpStatus.OK)
+        .build();
   }
 
   @DeleteMapping("/remove")
   public ResponseEntity<HttpStatus> remove(@RequestBody LibraryUserDTO libraryUserForDelete) {
     libraryUserService.delete(LibraryUserMapper.convertToLibraryUser(libraryUserForDelete));
 
-    return ResponseEntity.ok(HttpStatus.OK);
+    return ResponseEntity
+        .status(HttpStatus.OK)
+        .build();
   }
 
 
