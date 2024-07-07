@@ -1,5 +1,6 @@
 package com.example.booklibraryv2.controllers;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -28,7 +29,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 @WebMvcTest(excludeAutoConfiguration = SecurityAutoConfiguration.class, useDefaultFilters = false)
-@Import(BookController.class)
+@Import(value = {BookController.class, CustomExceptionHandler.class})
 @ExtendWith(MockitoExtension.class)
 class BookControllerTest {
 
@@ -98,7 +99,7 @@ class BookControllerTest {
     mvc.perform(post(ENDPOINT)
             .content(asJsonString(getTestBookDto()))
             .contentType(MediaType.APPLICATION_JSON)
-        .accept(MediaType.APPLICATION_JSON))
+            .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isCreated());
 
     verify(bookService, times(1))
@@ -106,16 +107,83 @@ class BookControllerTest {
   }
 
   @Test
-  void  createShouldNameIsNotValid() throws Exception {
+  void createShouldNameIsNotValidBecauseItIsEmpty() throws Exception {
+    BookDTO notValidBookDTO = getTestBookDto();
+    notValidBookDTO.setName("");
 
+    mvc.perform(post(ENDPOINT)
+            .content(asJsonString(notValidBookDTO))
+            .contentType(MediaType.APPLICATION_JSON)
+            .accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("$.name").value("Name shouldn't be empty!"));
+
+    verify(bookService, times(0))
+        .save(any());
   }
+
+  @Test
+  void createShouldNameIsNotValidBecauseItIsBreaksMaximumLength() throws Exception {
+    BookDTO notValidBookDTO = getTestBookDto();
+    notValidBookDTO.setName("Aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        + "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        + "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+
+    mvc.perform(post(ENDPOINT)
+            .content(asJsonString(notValidBookDTO))
+            .contentType(MediaType.APPLICATION_JSON)
+            .accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("$.name").value(
+            "Length shouldn't be greater than 200!"));
+
+    verify(bookService, times(0))
+        .save(any());
+  }
+
+  @Test
+  void createShouldAuthorIsNotValidBecauseItIsEmpty() throws Exception {
+    BookDTO notValidBookDTO = getTestBookDto();
+    notValidBookDTO.setAuthor("");
+
+    mvc.perform(post(ENDPOINT)
+            .content(asJsonString(notValidBookDTO))
+            .contentType(MediaType.APPLICATION_JSON)
+            .accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("$.author").value(
+            "Author designation shouldn't be empty!"));
+
+    verify(bookService, times(0))
+        .save(any());
+  }
+
+  @Test
+  void createShouldAuthorIsNotValidBecauseItIsBreaksMaximumLength() throws Exception {
+    BookDTO notValidBookDTO = getTestBookDto();
+    notValidBookDTO.setAuthor("Aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        + "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        + "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+
+    mvc.perform(post(ENDPOINT)
+            .content(asJsonString(notValidBookDTO))
+            .contentType(MediaType.APPLICATION_JSON)
+            .accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("$.author").value(
+            "Length shouldn't be greater than 200!"));
+
+    verify(bookService, times(0))
+        .save(any());
+  }
+
 
   @Test
   void updateShouldUpdateSuccessful() throws Exception {
     mvc.perform(patch(ENDPOINT)
-        .content(asJsonString(getTestBookDto()))
-        .contentType(MediaType.APPLICATION_JSON)
-        .accept(MediaType.APPLICATION_JSON))
+            .content(asJsonString(getTestBookDto()))
+            .contentType(MediaType.APPLICATION_JSON)
+            .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk());
 
     verify(bookService, times(1))
@@ -125,9 +193,9 @@ class BookControllerTest {
   @Test
   void deleteShouldDeleteSuccessful() throws Exception {
     mvc.perform(delete(ENDPOINT)
-        .content(asJsonString(getTestBookDto()))
-        .contentType(MediaType.APPLICATION_JSON)
-        .accept(MediaType.APPLICATION_JSON))
+            .content(asJsonString(getTestBookDto()))
+            .contentType(MediaType.APPLICATION_JSON)
+            .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk());
 
     verify(bookService, times(1))
