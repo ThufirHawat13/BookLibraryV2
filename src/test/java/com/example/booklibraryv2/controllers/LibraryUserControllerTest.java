@@ -1,5 +1,6 @@
 package com.example.booklibraryv2.controllers;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -28,7 +29,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 @WebMvcTest(excludeAutoConfiguration = SecurityAutoConfiguration.class, useDefaultFilters = false)
-@Import(LibraryUserController.class)
+@Import(value = {LibraryUserController.class, CustomExceptionHandler.class})
 @ExtendWith(MockitoExtension.class)
 class LibraryUserControllerTest {
 
@@ -57,7 +58,7 @@ class LibraryUserControllerTest {
 
   @Test
   void getByIdShouldReturnLibraryUserDto() throws Exception {
-    when(libraryUserService.findById(1))
+    when(libraryUserService.findById(1L))
         .thenReturn(getTestLibraryUser());
 
     mvc.perform(get(ENDPOINT + "/1")
@@ -69,7 +70,7 @@ class LibraryUserControllerTest {
         .andExpect(jsonPath("$.bookList").isEmpty());
 
     verify(libraryUserService, times(1))
-        .findById(1);
+        .findById(1L);
   }
 
   @Test
@@ -92,9 +93,9 @@ class LibraryUserControllerTest {
   @Test
   void createShouldCreateSuccessful() throws Exception {
     mvc.perform(post(ENDPOINT)
-        .content(asJsonString(getTestLibraryUserDto()))
-        .contentType(MediaType.APPLICATION_JSON)
-        .accept(MediaType.APPLICATION_JSON))
+            .content(asJsonString(getTestLibraryUserDto()))
+            .contentType(MediaType.APPLICATION_JSON)
+            .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isCreated());
 
     verify(libraryUserService, times(1))
@@ -102,11 +103,81 @@ class LibraryUserControllerTest {
   }
 
   @Test
+  void createShouldNameIsNotValidBecauseItIsEmpty() throws Exception {
+    LibraryUserDTO notValidLibraryUserDTO = getTestLibraryUserDto();
+    notValidLibraryUserDTO.setName("");
+
+    mvc.perform(post(ENDPOINT)
+            .content(asJsonString(notValidLibraryUserDTO))
+            .contentType(MediaType.APPLICATION_JSON)
+            .accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("$.name")
+            .value("Name shouldn't be empty!"));
+
+    verify(libraryUserService, times(0))
+        .save(any());
+  }
+
+  @Test
+  void createShouldSurnameIsNotValidBecauseItIsEmpty() throws Exception {
+    LibraryUserDTO notValidLibraryUserDTO = getTestLibraryUserDto();
+    notValidLibraryUserDTO.setSurname("");
+
+    mvc.perform(post(ENDPOINT)
+            .content(asJsonString(notValidLibraryUserDTO))
+            .contentType(MediaType.APPLICATION_JSON)
+            .accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("$.surname")
+            .value("Surname shouldn't be empty!"));
+
+    verify(libraryUserService, times(0))
+        .save(any());
+  }
+
+  @Test
+  void createShouldNameIsNotValidBecauseItIsBreaksMaximumLength() throws Exception {
+    LibraryUserDTO notValidLibraryUserDTO = getTestLibraryUserDto();
+    notValidLibraryUserDTO.setName("SultanSuleimanBertaMariaBenderBeiSultan"
+        + "SuleimanBertaMariaBenderBeiSultanSuleimanBertaMariaBenderBei");
+
+    mvc.perform(post(ENDPOINT)
+            .content(asJsonString(notValidLibraryUserDTO))
+            .contentType(MediaType.APPLICATION_JSON)
+            .accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("$.name")
+            .value("Length shouldn't be greater than 30!"));
+
+    verify(libraryUserService, times(0))
+        .save(any());
+  }
+
+  @Test
+  void createShouldSurnameIsNotValidBecauseItIsBreaksMaximumLength() throws Exception {
+    LibraryUserDTO notValidLibraryUserDTO = getTestLibraryUserDto();
+    notValidLibraryUserDTO.setSurname("SultanSuleimanBertaMariaBenderBeiSultan"
+        + "SuleimanBertaMariaBenderBeiSultanSuleimanBertaMariaBenderBei");
+
+    mvc.perform(post(ENDPOINT)
+            .content(asJsonString(notValidLibraryUserDTO))
+            .contentType(MediaType.APPLICATION_JSON)
+            .accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("$.surname")
+            .value("Length shouldn't be greater than 30!"));
+
+    verify(libraryUserService, times(0))
+        .save(any());
+  }
+
+  @Test
   void updateShouldUpdateSuccessful() throws Exception {
     mvc.perform(patch(ENDPOINT)
-        .content(asJsonString(getTestLibraryUserDto()))
-        .contentType(MediaType.APPLICATION_JSON)
-        .accept(MediaType.APPLICATION_JSON))
+            .content(asJsonString(getTestLibraryUserDto()))
+            .contentType(MediaType.APPLICATION_JSON)
+            .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk());
 
     verify(libraryUserService, times(1))
@@ -115,19 +186,16 @@ class LibraryUserControllerTest {
 
   @Test
   void deleteShouldDeleteSuccessful() throws Exception {
-    mvc.perform(delete(ENDPOINT)
-        .content(asJsonString(getTestLibraryUserDto()))
-        .contentType(MediaType.APPLICATION_JSON)
-        .accept(MediaType.APPLICATION_JSON))
+    mvc.perform(delete(ENDPOINT + "/1"))
         .andExpect(status().isOk());
 
     verify(libraryUserService, times(1))
-        .delete(getTestLibraryUser());
+        .delete(1L);
   }
 
   private LibraryUser getTestLibraryUser() {
     return LibraryUser.builder()
-        .id(1)
+        .id(1L)
         .name("Name")
         .surname("Surname")
         .bookList(null)
@@ -136,7 +204,7 @@ class LibraryUserControllerTest {
 
   private LibraryUserDTO getTestLibraryUserDto() {
     return LibraryUserDTO.builder()
-        .id(1)
+        .id(1L)
         .name("Name")
         .surname("Surname")
         .bookList(null)
