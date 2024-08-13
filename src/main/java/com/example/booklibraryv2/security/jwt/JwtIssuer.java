@@ -19,7 +19,7 @@ public class JwtIssuer {
   public String issueJwt(Long userId, String username, List<String> roles) {
     return JWT.create()
         .withSubject(String.valueOf(userId))
-        .withExpiresAt(Instant.now().plus(Duration.of(30, ChronoUnit.MINUTES)))
+        .withExpiresAt(Instant.now().plus(Duration.of(1, ChronoUnit.DAYS)))
         .withClaim("u", username)
         .withClaim("a", roles)
         .sign(Algorithm.HMAC256(properties.getAccessTokenSecretKey()));
@@ -28,7 +28,7 @@ public class JwtIssuer {
   public String issueRefreshToken(Long userId, String username) {
     return JWT.create()
         .withSubject(String.valueOf(userId))
-        .withExpiresAt(Instant.now().plus(Duration.of(1, ChronoUnit.DAYS)))
+        .withExpiresAt(Instant.now().plus(Duration.of(7, ChronoUnit.DAYS)))
         .withClaim("u", username)
         .withClaim("a", Collections.singletonList("USER"))
         .sign(Algorithm.HMAC256(properties.getRefreshTokenSecretKey()));
