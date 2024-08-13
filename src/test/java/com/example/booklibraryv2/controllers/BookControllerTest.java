@@ -61,7 +61,7 @@ class BookControllerTest {
 
   @Test
   void getByIdShouldReturnBookDto() throws Exception {
-    when(bookService.findById(1))
+    when(bookService.findById(1L))
         .thenReturn(getTestBook());
 
     mvc.perform(get(ENDPOINT + "/1")
@@ -74,7 +74,7 @@ class BookControllerTest {
         .andExpect(jsonPath("$.yearOfWriting").value("1111"));
 
     verify(bookService, times(1))
-        .findById(1);
+        .findById(1L);
   }
 
   @Test
@@ -125,9 +125,9 @@ class BookControllerTest {
   @Test
   void createShouldNameIsNotValidBecauseItIsBreaksMaximumLength() throws Exception {
     BookDTO notValidBookDTO = getTestBookDto();
-    notValidBookDTO.setName("Aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-        + "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-        + "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+    notValidBookDTO.setName("-------------------------------------------------------------------"
+        + "--------------------------------------------------------------------------------------"
+        + "-------------------------------------------------------------------------------------");
 
     mvc.perform(post(ENDPOINT)
             .content(asJsonString(notValidBookDTO))
@@ -161,9 +161,9 @@ class BookControllerTest {
   @Test
   void createShouldAuthorIsNotValidBecauseItIsBreaksMaximumLength() throws Exception {
     BookDTO notValidBookDTO = getTestBookDto();
-    notValidBookDTO.setAuthor("Aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-        + "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
-        + "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+    notValidBookDTO.setAuthor("-------------------------------------------------------------------"
+        + "--------------------------------------------------------------------------------------"
+        + "-------------------------------------------------------------------------------------");
 
     mvc.perform(post(ENDPOINT)
             .content(asJsonString(notValidBookDTO))
@@ -192,19 +192,16 @@ class BookControllerTest {
 
   @Test
   void deleteShouldDeleteSuccessful() throws Exception {
-    mvc.perform(delete(ENDPOINT)
-            .content(asJsonString(getTestBookDto()))
-            .contentType(MediaType.APPLICATION_JSON)
-            .accept(MediaType.APPLICATION_JSON))
+    mvc.perform(delete(ENDPOINT+"/1"))
         .andExpect(status().isOk());
 
     verify(bookService, times(1))
-        .delete(getTestBook());
+        .delete(1L);
   }
 
   private Book getTestBook() {
     return Book.builder()
-        .id(1)
+        .id(1L)
         .name("Book")
         .author("Author")
         .holder(null)
@@ -214,7 +211,7 @@ class BookControllerTest {
 
   private BookDTO getTestBookDto() {
     return BookDTO.builder()
-        .id(1)
+        .id(1L)
         .name("Book")
         .author("Author")
         .holder(null)
