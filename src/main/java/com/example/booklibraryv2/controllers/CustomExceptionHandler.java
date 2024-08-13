@@ -1,5 +1,6 @@
 package com.example.booklibraryv2.controllers;
 
+import com.example.booklibraryv2.exceptions.ServiceException;
 import java.util.HashMap;
 import java.util.Map;
 import org.springframework.http.HttpStatus;
@@ -27,6 +28,16 @@ public class CustomExceptionHandler {
           result.put(fieldError, errorMessage);
         }
     );
+
+    return result;
+  }
+
+  @ResponseStatus(HttpStatus.BAD_REQUEST)
+  @ExceptionHandler(value = {ServiceException.class})
+  public Map<String, String> handleServiceException(ServiceException exception) {
+    Map<String, String> result = new HashMap<>();
+
+    result.put("message", exception.getMessage());
 
     return result;
   }
