@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class BookDTO {
 
-  private Integer id;
+  private Long id;
   @NotBlank(message = "Name shouldn't be empty!")
   @Size(max = 200, message = "Length shouldn't be greater than 200!")
   private String name;

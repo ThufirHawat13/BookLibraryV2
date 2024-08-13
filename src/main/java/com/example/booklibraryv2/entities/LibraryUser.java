@@ -21,7 +21,7 @@ public class LibraryUser {
   @Id
   @Column(name = "id")
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Integer id;
+  private Long id;
   @Column(name = "name")
   private String name;
   @Column(name = "surname")

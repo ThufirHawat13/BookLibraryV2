@@ -1,6 +1,7 @@
 package com.example.booklibraryv2.controllers;
 
 import com.example.booklibraryv2.dto.BookDTO;
+import com.example.booklibraryv2.exceptions.ServiceException;
 import com.example.booklibraryv2.mappers.BookMapper;
 import com.example.booklibraryv2.services.BookService;
 import jakarta.validation.Valid;
@@ -32,12 +33,13 @@ public class BookController {
   }
 
   @GetMapping("/{id}")
-  public BookDTO getById(@PathVariable Integer id) {
+  public BookDTO getById(@PathVariable Long id) throws ServiceException {
     return BookMapper.convertToBookDTO(bookService.findById(id));
   }
 
   @GetMapping("/find/{searchQuery}")
   public List<BookDTO> findByNameContains(@PathVariable String searchQuery) {
+    //TODO add searching by author, year of writing...etc.
     return bookService.findByNameContains(searchQuery).stream()
         .map(BookMapper::convertToBookDTO)
         .collect(Collectors.toList());
@@ -53,7 +55,7 @@ public class BookController {
   }
 
   @PatchMapping()
-  public ResponseEntity<HttpStatus> update(@RequestBody BookDTO updatedBook) {
+  public ResponseEntity<HttpStatus> update(@RequestBody @Valid BookDTO updatedBook) {
     bookService.update(BookMapper.convertToBook(updatedBook));
 
     return ResponseEntity
@@ -61,9 +63,9 @@ public class BookController {
         .build();
   }
 
-  @DeleteMapping()
-  public ResponseEntity<HttpStatus> delete(@RequestBody BookDTO bookDTO) {
-    bookService.delete(BookMapper.convertToBook(bookDTO));
+  @DeleteMapping("/{id}")
+  public ResponseEntity<HttpStatus> delete(@PathVariable(name = "id") Long id) {
+    bookService.delete(id);
 
     return ResponseEntity
         .status(HttpStatus.OK)

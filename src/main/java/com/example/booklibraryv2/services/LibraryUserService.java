@@ -19,7 +19,7 @@ public class LibraryUserService {
     return libraryUserRepository.findAll();
   }
 
-  public LibraryUser findById(Integer id) {
+  public LibraryUser findById(Long id) {
     return libraryUserRepository.findById(id)
         .orElseThrow(() -> new ServiceException("Library user with id = %d isn't found!"
             .formatted(id)));
@@ -45,8 +45,8 @@ public class LibraryUserService {
   }
 
   @Transactional
-  public void delete(LibraryUser libraryUserForDelete) {
-    libraryUserRepository.delete(libraryUserForDelete);
+  public void delete(Long id) {
+    libraryUserRepository.deleteById(id);
   }
 
 }

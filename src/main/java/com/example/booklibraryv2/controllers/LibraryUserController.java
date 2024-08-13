@@ -3,6 +3,7 @@ package com.example.booklibraryv2.controllers;
 import com.example.booklibraryv2.dto.LibraryUserDTO;
 import com.example.booklibraryv2.mappers.LibraryUserMapper;
 import com.example.booklibraryv2.services.LibraryUserService;
+import jakarta.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -32,7 +33,7 @@ public class LibraryUserController {
   }
 
   @GetMapping("/{id}")
-  public LibraryUserDTO getById(@PathVariable Integer id) {
+  public LibraryUserDTO getById(@PathVariable Long id) {
     return LibraryUserMapper.convertToLibraryUserDTO(libraryUserService.findById(id));
   }
 
@@ -44,7 +45,7 @@ public class LibraryUserController {
   }
 
   @PostMapping()
-  public ResponseEntity<HttpStatus> create(@RequestBody LibraryUserDTO libraryUserDTO) {
+  public ResponseEntity<HttpStatus> create(@RequestBody @Valid LibraryUserDTO libraryUserDTO) {
     libraryUserService.save(LibraryUserMapper.convertToLibraryUser(libraryUserDTO));
 
     return ResponseEntity
@@ -53,7 +54,7 @@ public class LibraryUserController {
   }
 
   @PatchMapping()
-  public ResponseEntity<HttpStatus> update(@RequestBody LibraryUserDTO updatedLibraryUser) {
+  public ResponseEntity<HttpStatus> update(@RequestBody @Valid LibraryUserDTO updatedLibraryUser) {
     libraryUserService.update(LibraryUserMapper.convertToLibraryUser(updatedLibraryUser));
 
     return ResponseEntity
@@ -61,9 +62,9 @@ public class LibraryUserController {
         .build();
   }
 
-  @DeleteMapping()
-  public ResponseEntity<HttpStatus> delete(@RequestBody LibraryUserDTO libraryUserForDelete) {
-    libraryUserService.delete(LibraryUserMapper.convertToLibraryUser(libraryUserForDelete));
+  @DeleteMapping("/{id}")
+  public ResponseEntity<HttpStatus> delete(@PathVariable(name = "id") Long id) {
+    libraryUserService.delete(id);
 
     return ResponseEntity
         .status(HttpStatus.OK)

@@ -18,7 +18,7 @@ public class BookService {
     return bookRepository.findAll();
   }
 
-  public Book findById(Integer id) {
+  public Book findById(Long id) throws ServiceException {
     return bookRepository.findById(id)
         .orElseThrow(() -> new ServiceException("Book with id = %d isn't found!".formatted(id)));
   }
@@ -43,7 +43,7 @@ public class BookService {
   }
 
   @Transactional
-  public void delete(Book book) {
-    bookRepository.deleteById(book.getId());
+  public void delete(Long id) {
+    bookRepository.deleteById(id);
   }
 }
