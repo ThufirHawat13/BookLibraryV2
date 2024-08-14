@@ -39,8 +39,6 @@ class BookControllerTest {
   private BookService bookService;
   private final String ENDPOINT = "/books";
 
-  //TODO Добавить негтив кейсы после добавления валидации
-
   @Test
   void getAllShouldReturnBookDtoList() throws Exception {
     when(bookService.getAll())
@@ -53,7 +51,8 @@ class BookControllerTest {
         .andExpect(jsonPath("$[0].name").value("Book"))
         .andExpect(jsonPath("$[0].author").value("Author"))
         .andExpect(jsonPath("$[0].holder").isEmpty())
-        .andExpect(jsonPath("$[0].yearOfWriting").value("1111"));
+        .andExpect(jsonPath("$[0].yearOfWriting")
+            .value("1111"));
 
     verify(bookService, times(1))
         .getAll();
@@ -71,7 +70,8 @@ class BookControllerTest {
         .andExpect(jsonPath("$.name").value("Book"))
         .andExpect(jsonPath("$.author").value("Author"))
         .andExpect(jsonPath("$.holder").isEmpty())
-        .andExpect(jsonPath("$.yearOfWriting").value("1111"));
+        .andExpect(jsonPath("$.yearOfWriting")
+            .value("1111"));
 
     verify(bookService, times(1))
         .findById(1L);
@@ -88,7 +88,8 @@ class BookControllerTest {
         .andExpect(jsonPath("$[0].name").value("Book"))
         .andExpect(jsonPath("$[0].author").value("Author"))
         .andExpect(jsonPath("$[0].holder").isEmpty())
-        .andExpect(jsonPath("$[0].yearOfWriting").value("1111"));
+        .andExpect(jsonPath("$[0].yearOfWriting")
+            .value("1111"));
 
     verify(bookService, times(1))
         .findByNameContains("Book");
@@ -107,7 +108,7 @@ class BookControllerTest {
   }
 
   @Test
-  void createShouldNameIsNotValidBecauseItIsEmpty() throws Exception {
+  void createShouldReturnBadRequestWhenNameIsEmpty() throws Exception {
     BookDTO notValidBookDTO = getTestBookDto();
     notValidBookDTO.setName("");
 
@@ -116,14 +117,15 @@ class BookControllerTest {
             .contentType(MediaType.APPLICATION_JSON)
             .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isBadRequest())
-        .andExpect(jsonPath("$.name").value("Name shouldn't be empty!"));
+        .andExpect(jsonPath("$.name")
+            .value("Name shouldn't be empty!"));
 
     verify(bookService, times(0))
         .save(any());
   }
 
   @Test
-  void createShouldNameIsNotValidBecauseItIsBreaksMaximumLength() throws Exception {
+  void createShouldReturnBadRequestWhenNameBreaksMaximumLength() throws Exception {
     BookDTO notValidBookDTO = getTestBookDto();
     notValidBookDTO.setName("-------------------------------------------------------------------"
         + "--------------------------------------------------------------------------------------"
@@ -134,15 +136,15 @@ class BookControllerTest {
             .contentType(MediaType.APPLICATION_JSON)
             .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isBadRequest())
-        .andExpect(jsonPath("$.name").value(
-            "Length shouldn't be greater than 200!"));
+        .andExpect(jsonPath("$.name")
+            .value("Length shouldn't be greater than 200!"));
 
     verify(bookService, times(0))
         .save(any());
   }
 
   @Test
-  void createShouldAuthorIsNotValidBecauseItIsEmpty() throws Exception {
+  void createShouldReturnBadRequestWhenAuthorIsEmpty() throws Exception {
     BookDTO notValidBookDTO = getTestBookDto();
     notValidBookDTO.setAuthor("");
 
@@ -151,15 +153,15 @@ class BookControllerTest {
             .contentType(MediaType.APPLICATION_JSON)
             .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isBadRequest())
-        .andExpect(jsonPath("$.author").value(
-            "Author designation shouldn't be empty!"));
+        .andExpect(jsonPath("$.author")
+            .value("Author designation shouldn't be empty!"));
 
     verify(bookService, times(0))
         .save(any());
   }
 
   @Test
-  void createShouldAuthorIsNotValidBecauseItIsBreaksMaximumLength() throws Exception {
+  void createShouldReturnBadRequestWhenAuthorBreaksMaximumLength() throws Exception {
     BookDTO notValidBookDTO = getTestBookDto();
     notValidBookDTO.setAuthor("-------------------------------------------------------------------"
         + "--------------------------------------------------------------------------------------"
@@ -170,13 +172,48 @@ class BookControllerTest {
             .contentType(MediaType.APPLICATION_JSON)
             .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isBadRequest())
-        .andExpect(jsonPath("$.author").value(
-            "Length shouldn't be greater than 200!"));
+        .andExpect(jsonPath("$.author")
+            .value("Length shouldn't be greater than 200!"));
 
     verify(bookService, times(0))
         .save(any());
   }
 
+  @Test
+  void createShouldReturnBadRequestWhenYearOfWritingLowerThanMinimumAvailableValue()
+      throws Exception {
+    BookDTO notValidBookDTO = getTestBookDto();
+    notValidBookDTO.setYearOfWriting(-1);
+
+    mvc.perform(post(ENDPOINT)
+            .content(asJsonString(notValidBookDTO))
+            .contentType(MediaType.APPLICATION_JSON)
+            .accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("$.yearOfWriting")
+            .value("Year of writing shouldn't be lower than 0!"));
+
+    verify(bookService, times(0))
+        .save(any());
+  }
+
+  @Test
+  void creteShouldReturnBadRequestWhenYearOfWritingGreaterThanMaximumAvailableValue()
+      throws Exception {
+    BookDTO notValidBookDTO = getTestBookDto();
+    notValidBookDTO.setYearOfWriting(3000);
+
+    mvc.perform(post(ENDPOINT)
+            .content(asJsonString(notValidBookDTO))
+            .contentType(MediaType.APPLICATION_JSON)
+            .accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("$.yearOfWriting")
+            .value("Year of writing shouldn't be greater than 2024!"));
+
+    verify(bookService, times(0))
+        .save(any());
+  }
 
   @Test
   void updateShouldUpdateSuccessful() throws Exception {
@@ -191,8 +228,116 @@ class BookControllerTest {
   }
 
   @Test
+  void updateShouldReturnBadRequestWhenNameIsEmpty() throws Exception {
+    BookDTO notValidBookDTO = getTestBookDto();
+    notValidBookDTO.setName("");
+
+    mvc.perform(patch(ENDPOINT)
+            .content(asJsonString(notValidBookDTO))
+            .contentType(MediaType.APPLICATION_JSON)
+            .accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("$.name")
+            .value("Name shouldn't be empty!"));
+
+    verify(bookService, times(0))
+        .update(any());
+  }
+
+  @Test
+  void updateShouldReturnBadRequestWhenNameBreaksMaximumLength() throws Exception {
+    BookDTO notValidBookDTO = getTestBookDto();
+    notValidBookDTO.setName("-------------------------------------------------------------------"
+        + "--------------------------------------------------------------------------------------"
+        + "-------------------------------------------------------------------------------------");
+
+    mvc.perform(patch(ENDPOINT)
+            .content(asJsonString(notValidBookDTO))
+            .contentType(MediaType.APPLICATION_JSON)
+            .accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("$.name")
+            .value("Length shouldn't be greater than 200!"));
+
+    verify(bookService, times(0))
+        .update(any());
+  }
+
+  @Test
+  void updateShouldReturnBadRequestWhenAuthorIsEmpty() throws Exception {
+    BookDTO notValidBookDTO = getTestBookDto();
+    notValidBookDTO.setAuthor("");
+
+    mvc.perform(patch(ENDPOINT)
+            .content(asJsonString(notValidBookDTO))
+            .contentType(MediaType.APPLICATION_JSON)
+            .accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("$.author")
+            .value("Author designation shouldn't be empty!"));
+
+    verify(bookService, times(0))
+        .update(any());
+  }
+
+  @Test
+  void updateShouldReturnBadRequestWhenAuthorBreaksMaximumLength() throws Exception {
+    BookDTO notValidBookDTO = getTestBookDto();
+    notValidBookDTO.setAuthor("-------------------------------------------------------------------"
+        + "--------------------------------------------------------------------------------------"
+        + "-------------------------------------------------------------------------------------");
+
+    mvc.perform(patch(ENDPOINT)
+            .content(asJsonString(notValidBookDTO))
+            .contentType(MediaType.APPLICATION_JSON)
+            .accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("$.author")
+            .value("Length shouldn't be greater than 200!"));
+
+    verify(bookService, times(0))
+        .update(any());
+  }
+
+  @Test
+  void updateShouldReturnBadRequestWhenYearOfWritingLowerThanMinimumAvailableValue()
+      throws Exception {
+    BookDTO notValidBookDTO = getTestBookDto();
+    notValidBookDTO.setYearOfWriting(-1);
+
+    mvc.perform(patch(ENDPOINT)
+            .content(asJsonString(notValidBookDTO))
+            .contentType(MediaType.APPLICATION_JSON)
+            .accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("$.yearOfWriting")
+            .value("Year of writing shouldn't be lower than 0!"));
+
+    verify(bookService, times(0))
+        .update(any());
+  }
+
+  @Test
+  void updateShouldReturnBadRequestWhenYearOfWritingGreaterThanMaximumAvailableValue()
+      throws Exception {
+    BookDTO notValidBookDTO = getTestBookDto();
+    notValidBookDTO.setYearOfWriting(3000);
+
+    mvc.perform(patch(ENDPOINT)
+            .content(asJsonString(notValidBookDTO))
+            .contentType(MediaType.APPLICATION_JSON)
+            .accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("$.yearOfWriting")
+            .value("Year of writing shouldn't be greater than 2024!"));
+
+    verify(bookService, times(0))
+        .update(any());
+  }
+
+  @Test
   void deleteShouldDeleteSuccessful() throws Exception {
-    mvc.perform(delete(ENDPOINT+"/1"))
+    mvc.perform(delete(ENDPOINT + "/1"))
         .andExpect(status().isOk());
 
     verify(bookService, times(1))
