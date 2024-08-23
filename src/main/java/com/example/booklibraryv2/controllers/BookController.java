@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/books")
 @RequiredArgsConstructor
 public class BookController {
+
   private final BookService bookService;
 
   @GetMapping
@@ -46,29 +47,27 @@ public class BookController {
   }
 
   @PostMapping()
-  public ResponseEntity<HttpStatus> create(@RequestBody @Valid BookDTO bookDTO) {
-    bookService.save(BookMapper.convertToBook(bookDTO));
-
+  public ResponseEntity<BookDTO> create(@RequestBody @Valid BookDTO bookDTO) {
     return ResponseEntity
         .status(HttpStatus.CREATED)
-        .build();
+        .body(BookMapper.convertToBookDTO(
+            bookService.save(BookMapper.convertToBook(bookDTO))));
   }
 
   @PatchMapping()
-  public ResponseEntity<HttpStatus> update(@RequestBody @Valid BookDTO updatedBook) {
-    bookService.update(BookMapper.convertToBook(updatedBook));
-
+  public ResponseEntity<BookDTO> update(@RequestBody @Valid BookDTO updatedBook)
+      throws ServiceException {
     return ResponseEntity
         .status(HttpStatus.OK)
-        .build();
+        .body(BookMapper.convertToBookDTO(
+            bookService.update(BookMapper.convertToBook(updatedBook))));
   }
 
   @DeleteMapping("/{id}")
-  public ResponseEntity<HttpStatus> delete(@PathVariable(name = "id") Long id) {
-    bookService.delete(id);
-
+  public ResponseEntity<BookDTO> delete(@PathVariable(name = "id") Long id)
+      throws ServiceException {
     return ResponseEntity
         .status(HttpStatus.OK)
-        .build();
+        .body(BookMapper.convertToBookDTO(bookService.delete(id)));
   }
 }

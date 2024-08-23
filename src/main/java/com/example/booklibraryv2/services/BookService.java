@@ -3,7 +3,9 @@ package com.example.booklibraryv2.services;
 import com.example.booklibraryv2.entities.Book;
 import com.example.booklibraryv2.exceptions.ServiceException;
 import com.example.booklibraryv2.repositories.BookRepository;
+import java.rmi.ServerException;
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,22 +30,29 @@ public class BookService {
   }
 
   @Transactional
-  public void save(Book book) {
-    bookRepository.save(book);
+  public Book save(Book book) {
+    return bookRepository.save(book);
   }
 
   @Transactional
-  public void update(Book updatedBook) {
-    Book book = bookRepository.findById(updatedBook.getId()).orElse(null);
+  public Book update(Book updatedBook) throws ServiceException {
 
-    book.setName(updatedBook.getName());
-    book.setAuthor(updatedBook.getAuthor());
-    book.setHolder(updatedBook.getHolder());
-    book.setYearOfWriting(updatedBook.getYearOfWriting());
+    if (bookRepository.existsById(updatedBook.getId())) {
+      return bookRepository.save(updatedBook);
+    } else {
+      throw new ServiceException(
+          "Book with id=%s isn't exists!".formatted(updatedBook.getId()));
+    }
   }
 
   @Transactional
-  public void delete(Long id) {
+  public Book delete(Long id) throws ServiceException {
+    Book bookForDelete = bookRepository.findById(id)
+        .orElseThrow(() -> new ServiceException(
+            "Book with id=%s isn't exists!".formatted(id)));
+
     bookRepository.deleteById(id);
+
+    return bookForDelete;
   }
 }
