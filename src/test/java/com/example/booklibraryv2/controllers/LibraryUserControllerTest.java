@@ -92,11 +92,18 @@ class LibraryUserControllerTest {
 
   @Test
   void createShouldCreateSuccessful() throws Exception {
+    when(libraryUserService.save(getTestLibraryUser()))
+        .thenReturn(getTestLibraryUser());
+
     mvc.perform(post(ENDPOINT)
             .content(asJsonString(getTestLibraryUserDto()))
             .contentType(MediaType.APPLICATION_JSON)
             .accept(MediaType.APPLICATION_JSON))
-        .andExpect(status().isCreated());
+        .andExpect(status().isCreated())
+        .andExpect(jsonPath("$.id").value(1))
+        .andExpect(jsonPath("$.name").value("Name"))
+        .andExpect(jsonPath("$.surname").value("Surname"))
+        .andExpect(jsonPath("$.bookList").isEmpty());
 
     verify(libraryUserService, times(1))
         .save(getTestLibraryUser());
@@ -174,11 +181,18 @@ class LibraryUserControllerTest {
 
   @Test
   void updateShouldUpdateSuccessful() throws Exception {
+    when(libraryUserService.update(getTestLibraryUser()))
+        .thenReturn(getTestLibraryUser());
+
     mvc.perform(patch(ENDPOINT)
             .content(asJsonString(getTestLibraryUserDto()))
             .contentType(MediaType.APPLICATION_JSON)
             .accept(MediaType.APPLICATION_JSON))
-        .andExpect(status().isOk());
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.id").value(1))
+        .andExpect(jsonPath("$.name").value("Name"))
+        .andExpect(jsonPath("$.surname").value("Surname"))
+        .andExpect(jsonPath("$.bookList").isEmpty());
 
     verify(libraryUserService, times(1))
         .update(getTestLibraryUser());
@@ -254,8 +268,15 @@ class LibraryUserControllerTest {
 
   @Test
   void deleteShouldDeleteSuccessful() throws Exception {
+    when(libraryUserService.delete(1L))
+        .thenReturn(getTestLibraryUser());
+
     mvc.perform(delete(ENDPOINT + "/1"))
-        .andExpect(status().isOk());
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.id").value(1))
+        .andExpect(jsonPath("$.name").value("Name"))
+        .andExpect(jsonPath("$.surname").value("Surname"))
+        .andExpect(jsonPath("$.bookList").isEmpty());
 
     verify(libraryUserService, times(1))
         .delete(1L);

@@ -1,6 +1,7 @@
 package com.example.booklibraryv2.controllers;
 
 import com.example.booklibraryv2.dto.LibraryUserDTO;
+import com.example.booklibraryv2.exceptions.ServiceException;
 import com.example.booklibraryv2.mappers.LibraryUserMapper;
 import com.example.booklibraryv2.services.LibraryUserService;
 import jakarta.validation.Valid;
@@ -45,30 +46,27 @@ public class LibraryUserController {
   }
 
   @PostMapping()
-  public ResponseEntity<HttpStatus> create(@RequestBody @Valid LibraryUserDTO libraryUserDTO) {
-    libraryUserService.save(LibraryUserMapper.convertToLibraryUser(libraryUserDTO));
-
+  public ResponseEntity<LibraryUserDTO> create(@RequestBody @Valid LibraryUserDTO libraryUserDTO) {
     return ResponseEntity
         .status(HttpStatus.CREATED)
-        .build();
+        .body(LibraryUserMapper.convertToLibraryUserDTO(
+            libraryUserService.save(LibraryUserMapper.convertToLibraryUser(libraryUserDTO))));
   }
 
   @PatchMapping()
-  public ResponseEntity<HttpStatus> update(@RequestBody @Valid LibraryUserDTO updatedLibraryUser) {
-    libraryUserService.update(LibraryUserMapper.convertToLibraryUser(updatedLibraryUser));
-
+  public ResponseEntity<LibraryUserDTO> update(
+      @RequestBody @Valid LibraryUserDTO updatedLibraryUser) throws ServiceException {
     return ResponseEntity
         .status(HttpStatus.OK)
-        .build();
+        .body(LibraryUserMapper.convertToLibraryUserDTO(
+            libraryUserService.update(LibraryUserMapper.convertToLibraryUser(updatedLibraryUser))));
   }
 
   @DeleteMapping("/{id}")
-  public ResponseEntity<HttpStatus> delete(@PathVariable(name = "id") Long id) {
-    libraryUserService.delete(id);
-
+  public ResponseEntity<LibraryUserDTO> delete(@PathVariable(name = "id") Long id) {
     return ResponseEntity
         .status(HttpStatus.OK)
-        .build();
+        .body(LibraryUserMapper.convertToLibraryUserDTO(libraryUserService.delete(id)));
   }
 
 

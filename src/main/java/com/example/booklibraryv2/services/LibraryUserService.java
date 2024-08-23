@@ -30,23 +30,28 @@ public class LibraryUserService {
   }
 
   @Transactional
-  public void save(LibraryUser libraryUser) {
-    libraryUserRepository.save(libraryUser);
+  public LibraryUser save(LibraryUser libraryUser) {
+    return libraryUserRepository.save(libraryUser);
   }
 
   @Transactional
-  public void update(LibraryUser updatedLibraryUser) {
-    LibraryUser libraryUser = libraryUserRepository.findById(updatedLibraryUser.getId())
-        .orElse(null);
-
-    libraryUser.setName(libraryUser.getName());
-    libraryUser.setSurname(libraryUser.getSurname());
-    libraryUser.setBookList(libraryUser.getBookList());
+  public LibraryUser update(LibraryUser updatedLibraryUser) throws ServiceException {
+    if (libraryUserRepository.existsById(updatedLibraryUser.getId())) {
+      return libraryUserRepository.save(updatedLibraryUser);
+    } else {
+      throw new ServiceException("Library user with id=%s isn't found!"
+          .formatted(updatedLibraryUser.getId()));
+    }
   }
 
   @Transactional
-  public void delete(Long id) {
+  public LibraryUser delete(Long id) {
+    LibraryUser libraryUser = libraryUserRepository.findById(id)
+            .orElseThrow(() -> new ServiceException("Library user with id=%s isn't found!"
+                .formatted(id)));
     libraryUserRepository.deleteById(id);
+
+    return libraryUser;
   }
 
 }
