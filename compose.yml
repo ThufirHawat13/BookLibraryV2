@@ -26,6 +26,9 @@ services:
       POSTGRES_DB: book_library_db
       POSTGRES_USER: library_user
       POSTGRES_PASSWORD: library_user
+    # Проброс порта 5432 контейнера на порт 5432 хост-машины
+    ports:
+      - '5432:5432'
     # Проверка состояния Postgres
     healthcheck:
       test: ["CMD", "ps_isready -U postgres"]
