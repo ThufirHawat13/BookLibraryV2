@@ -1,0 +1,34 @@
+# Версия Docker Compose
+version: '2.24'
+
+# Определение сервисов
+services:
+
+  # Сервис приложения
+  app:
+    # Сборка образа из Dockerfile, находящегося в текущей директории
+    build:
+      context: .
+      dockerfile: Dockerfile
+    # Проброс порта 8080 контейнера на порт 8080 хост-машины
+    ports:
+      - '8080:8080'
+    # Указание того, что сервис app будет запущен после сервиса db
+    depends_on:
+      - db
+
+  # Сервис БД
+  db:
+    # Использование последненго образа PostgreSQL
+    image: postgres:latest
+    # Задание переменных окружения для создания БД
+    environment:
+      POSTGRES_DB: book_library_db
+      POSTGRES_USER: library_user
+      POSTGRES_PASSWORD: library_user
+    # Проверка состояния Postgres
+    healthcheck:
+      test: ["CMD", "ps_isready -U postgres"]
+      interval: 10s
+      timeout: 10s
+      retries: 5
