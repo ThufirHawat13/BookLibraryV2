@@ -14,8 +14,10 @@ services:
     ports:
       - '8080:8080'
     # Указание того, что сервис app будет запущен после сервиса db
+    # и только при условии прохождения healthcheck
     depends_on:
-      - db
+      db:
+        condition: service_healthy
 
   # Сервис БД
   db:
@@ -31,7 +33,7 @@ services:
       - '5432:5432'
     # Проверка состояния Postgres
     healthcheck:
-      test: ["CMD", "ps_isready -U postgres"]
+      test: ["CMD-SHELL", "ps_isready -U library_user"]
       interval: 10s
-      timeout: 10s
+      timeout: 5s
       retries: 5
