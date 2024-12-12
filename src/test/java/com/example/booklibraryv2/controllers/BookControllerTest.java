@@ -51,8 +51,7 @@ class BookControllerTest {
         .andExpect(jsonPath("$[0].name").value("Book"))
         .andExpect(jsonPath("$[0].author").value("Author"))
         .andExpect(jsonPath("$[0].holder").isEmpty())
-        .andExpect(jsonPath("$[0].yearOfWriting")
-            .value("1111"));
+        .andExpect(jsonPath("$[0].yearOfWriting").value("1111"));
 
     verify(bookService, times(1))
         .getAll();
