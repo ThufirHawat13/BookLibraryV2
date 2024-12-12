@@ -351,16 +351,8 @@ class BookControllerTest {
 
   @Test
   void deleteShouldDeleteSuccessful() throws Exception {
-    when(bookService.delete(1L))
-        .thenReturn(getTestBook());
-
     mvc.perform(delete(ENDPOINT + "/1"))
-        .andExpect(status().isOk())
-        .andExpect(jsonPath("$.id").value("1"))
-        .andExpect(jsonPath("$.name").value("Book"))
-        .andExpect(jsonPath("$.author").value("Author"))
-        .andExpect(jsonPath("$.holder").isEmpty())
-        .andExpect(jsonPath("$.yearOfWriting").value("1111"));;
+        .andExpect(status().isNoContent());
 
     verify(bookService, times(1))
         .delete(1L);

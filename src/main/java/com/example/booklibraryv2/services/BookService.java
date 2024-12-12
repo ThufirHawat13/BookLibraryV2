@@ -5,12 +5,14 @@ import com.example.booklibraryv2.exceptions.ServiceException;
 import com.example.booklibraryv2.repositories.BookRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
+@Slf4j
 public class BookService {
   private final BookRepository bookRepository;
 
@@ -29,7 +31,10 @@ public class BookService {
 
   @Transactional
   public Book save(Book book) {
-    return bookRepository.save(book);
+    Book savedBook = bookRepository.save(book);
+    log.info("saved book: {}", savedBook);
+
+    return savedBook;
   }
 
   @Transactional
@@ -44,13 +49,11 @@ public class BookService {
   }
 
   @Transactional
-  public Book delete(Long id) throws ServiceException {
+  public void delete(Long id) throws ServiceException {
     Book bookForDelete = bookRepository.findById(id)
         .orElseThrow(() -> new ServiceException(
             "Book with id=%s isn't exists!".formatted(id)));
-
     bookRepository.deleteById(id);
-
-    return bookForDelete;
+    log.info("deleted book: {}", bookForDelete);
   }
 }

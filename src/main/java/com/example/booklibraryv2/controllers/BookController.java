@@ -40,7 +40,6 @@ public class BookController {
 
   @GetMapping("/find/{searchQuery}")
   public List<BookDTO> findByNameContains(@PathVariable String searchQuery) {
-    //TODO add searching by author, year of writing...etc.
     return bookService.findByNameContains(searchQuery).stream()
         .map(BookMapper::convertToBookDTO)
         .collect(Collectors.toList());
@@ -64,10 +63,12 @@ public class BookController {
   }
 
   @DeleteMapping("/{id}")
-  public ResponseEntity<BookDTO> delete(@PathVariable(name = "id") Long id)
+  public ResponseEntity<HttpStatus> delete(@PathVariable(name = "id") Long id)
       throws ServiceException {
+    bookService.delete(id);
+
     return ResponseEntity
-        .status(HttpStatus.OK)
-        .body(BookMapper.convertToBookDTO(bookService.delete(id)));
+        .status(HttpStatus.NO_CONTENT)
+        .build();
   }
 }
