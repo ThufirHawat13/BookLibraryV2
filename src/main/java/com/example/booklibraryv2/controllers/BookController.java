@@ -1,6 +1,7 @@
 package com.example.booklibraryv2.controllers;
 
 import com.example.booklibraryv2.dto.BookDTO;
+import com.example.booklibraryv2.dto.BookUpdateDTO;
 import com.example.booklibraryv2.exceptions.ServiceException;
 import com.example.booklibraryv2.mappers.BookMapper;
 import com.example.booklibraryv2.services.BookService;
@@ -53,13 +54,14 @@ public class BookController {
             bookService.save(BookMapper.convertToBook(bookDTO))));
   }
 
-  @PatchMapping()
-  public ResponseEntity<BookDTO> update(@RequestBody @Valid BookDTO updatedBook)
+  @PatchMapping("/{id}")
+  public ResponseEntity<BookDTO> update(@PathVariable(name = "id") Long id,
+      @RequestBody @Valid BookUpdateDTO updatedFields)
       throws ServiceException {
     return ResponseEntity
         .status(HttpStatus.OK)
         .body(BookMapper.convertToBookDTO(
-            bookService.update(BookMapper.convertToBook(updatedBook))));
+            bookService.update(id, updatedFields)));
   }
 
   @DeleteMapping("/{id}")
