@@ -1,5 +1,6 @@
 package com.example.booklibraryv2.dto;
 
+import com.example.booklibraryv2.dto.bookDTO.BookDTO;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import java.util.List;
@@ -13,6 +14,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class LibraryUserDTO {
+
   private Long id;
   @NotBlank(message = "Name shouldn't be empty!")
   @Size(max = 30, message = "Length shouldn't be greater than 30!")

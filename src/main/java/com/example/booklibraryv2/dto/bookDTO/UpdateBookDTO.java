@@ -1,4 +1,4 @@
-package com.example.booklibraryv2.dto;
+package com.example.booklibraryv2.dto.bookDTO;
 
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class BookUpdateDTO {
+public class UpdateBookDTO {
 
   @Size(max = 200, message = "Length shouldn't be greater than 200!")
   private String name;

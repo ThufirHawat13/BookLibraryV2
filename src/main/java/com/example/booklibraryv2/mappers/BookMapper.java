@@ -1,6 +1,7 @@
 package com.example.booklibraryv2.mappers;
 
-import com.example.booklibraryv2.dto.BookDTO;
+import com.example.booklibraryv2.dto.bookDTO.CreateBookDTO;
+import com.example.booklibraryv2.dto.bookDTO.BookDTO;
 import com.example.booklibraryv2.entities.Book;
 import com.example.booklibraryv2.entities.LibraryUser;
 import lombok.RequiredArgsConstructor;
@@ -24,18 +25,12 @@ public class BookMapper {
     return result;
   }
 
-  public static Book convertToBook(BookDTO bookDTO) {
+  public static Book convertToBook(CreateBookDTO createBookDTO) {
     Book result = new Book();
 
-    result.setId(bookDTO.getId());
-    result.setName(bookDTO.getName());
-    result.setAuthor(bookDTO.getAuthor());
-    result.setYearOfWriting(bookDTO.getYearOfWriting());
-
-    com.example.booklibraryv2.dto.LibraryUserDTO holderDTO;
-    if ((holderDTO = bookDTO.getHolder()) != null) {
-      result.setHolder(LibraryUserMapper.convertToLibraryUser(holderDTO));
-    }
+    result.setName(createBookDTO.getName());
+    result.setAuthor(createBookDTO.getAuthor());
+    result.setYearOfWriting(createBookDTO.getYearOfWriting());
 
     return result;
   }
