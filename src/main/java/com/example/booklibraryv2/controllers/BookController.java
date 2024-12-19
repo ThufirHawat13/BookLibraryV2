@@ -1,8 +1,9 @@
 package com.example.booklibraryv2.controllers;
 
-import com.example.booklibraryv2.dto.bookDTO.CreateBookDTO;
-import com.example.booklibraryv2.dto.bookDTO.BookDTO;
+import com.example.booklibraryv2.dto.bookDTO.BookRequestDTO;
+import com.example.booklibraryv2.dto.bookDTO.BookResponseDTO;
 import com.example.booklibraryv2.dto.bookDTO.UpdateBookDTO;
+import com.example.booklibraryv2.dto.validationGroups.CreateGroup;
 import com.example.booklibraryv2.exceptions.ServiceException;
 import com.example.booklibraryv2.mappers.BookMapper;
 import com.example.booklibraryv2.services.BookService;
@@ -12,6 +13,7 @@ import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -29,36 +31,36 @@ public class BookController {
   private final BookService bookService;
 
   @GetMapping
-  public List<BookDTO> getAll() {
+  public List<BookResponseDTO> getAll() {
     return bookService.getAll().stream()
         .map(BookMapper::convertToBookDTO)
         .collect(Collectors.toList());
   }
 
   @GetMapping("/{id}")
-  public BookDTO getById(@PathVariable Long id) throws ServiceException {
+  public BookResponseDTO getById(@PathVariable Long id) throws ServiceException {
     return BookMapper.convertToBookDTO(bookService.findById(id));
   }
 
   @GetMapping("/find/{searchQuery}")
-  public List<BookDTO> findByNameContains(@PathVariable String searchQuery) {
+  public List<BookResponseDTO> findByNameContains(@PathVariable String searchQuery) {
     return bookService.findByNameContains(searchQuery).stream()
         .map(BookMapper::convertToBookDTO)
         .collect(Collectors.toList());
   }
 
   @PostMapping()
-  public ResponseEntity<BookDTO> create(@RequestBody @Valid CreateBookDTO createBookDTO) {
+  public ResponseEntity<BookResponseDTO> create(
+      @Validated(CreateGroup.class) @RequestBody BookRequestDTO bookRequestDTO) {
     return ResponseEntity
         .status(HttpStatus.CREATED)
         .body(BookMapper.convertToBookDTO(
-            bookService.save(BookMapper.convertToBook(createBookDTO))));
+            bookService.save(BookMapper.convertToBook(bookRequestDTO))));
   }
 
   @PatchMapping("/{id}")
-  public ResponseEntity<BookDTO> update(@PathVariable(name = "id") Long id,
-      @RequestBody @Valid UpdateBookDTO updatedFields)
-      throws ServiceException {
+  public ResponseEntity<BookResponseDTO> update(@PathVariable(name = "id") Long id,
+      @RequestBody @Valid UpdateBookDTO updatedFields) throws ServiceException {
     return ResponseEntity
         .status(HttpStatus.OK)
         .body(BookMapper.convertToBookDTO(

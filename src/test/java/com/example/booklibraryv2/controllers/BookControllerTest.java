@@ -12,8 +12,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.example.booklibraryv2.dto.bookDTO.BookDTO;
-import com.example.booklibraryv2.dto.bookDTO.CreateBookDTO;
+import com.example.booklibraryv2.dto.bookDTO.BookResponseDTO;
+import com.example.booklibraryv2.dto.bookDTO.BookRequestDTO;
 import com.example.booklibraryv2.dto.bookDTO.UpdateBookDTO;
 import com.example.booklibraryv2.entities.Book;
 import com.example.booklibraryv2.services.BookService;
@@ -122,20 +122,20 @@ class BookControllerTest {
 
   @Test
   void createShouldReturnBadRequestWhenFieldsAreEmpty() throws Exception {
-    CreateBookDTO notValidCreateBookDTO = CreateBookDTO.builder()
+    BookRequestDTO notValidBookRequestDTO = BookRequestDTO.builder()
+        .name("")
+        .author("")
         .build();
 
     mvc.perform(post(ENDPOINT)
         .contentType(MediaType.APPLICATION_JSON)
         .accept(MediaType.APPLICATION_JSON)
-        .content(asJsonString(notValidCreateBookDTO)))
+        .content(asJsonString(notValidBookRequestDTO)))
         .andExpect(status().isBadRequest())
         .andExpect(jsonPath("$.name")
             .value("Name shouldn't be empty!"))
         .andExpect(jsonPath("$.author")
-            .value("Author designation shouldn't be empty!"))
-        .andExpect(jsonPath("$.yearOfWriting")
-            .value("Year of writing shouldn't be empty!"));
+            .value("Author designation shouldn't be empty!"));
 
     verify(bookService, times(0))
         .save(any());
@@ -147,7 +147,7 @@ class BookControllerTest {
     IntStream.rangeClosed(0,200)
         .forEach(maxLengthPlus1Symbols::append);
 
-    CreateBookDTO notValidCreateBookDTO = CreateBookDTO.builder()
+    BookRequestDTO notValidBookRequestDTO = BookRequestDTO.builder()
         .name(maxLengthPlus1Symbols.toString())
         .author(maxLengthPlus1Symbols.toString())
         .yearOfWriting(1111)
@@ -156,7 +156,7 @@ class BookControllerTest {
     mvc.perform(post(ENDPOINT)
         .contentType(MediaType.APPLICATION_JSON)
         .accept(MediaType.APPLICATION_JSON)
-        .content(asJsonString(notValidCreateBookDTO)))
+        .content(asJsonString(notValidBookRequestDTO)))
         .andExpect(status().isBadRequest())
         .andExpect(jsonPath("$.name")
             .value("Length shouldn't be greater than 200!"))
@@ -170,11 +170,11 @@ class BookControllerTest {
   @Test
   void createShouldReturnBadRequestWhenYearOfBirthBreakingMinValue()
       throws Exception {
-    CreateBookDTO notValidCreateBookDTO = getTestCreateBookDTO();
-    notValidCreateBookDTO.setYearOfWriting(-1);
+    BookRequestDTO notValidBookRequestDTO = getTestCreateBookDTO();
+    notValidBookRequestDTO.setYearOfWriting(-1);
 
     mvc.perform(post(ENDPOINT)
-            .content(asJsonString(notValidCreateBookDTO))
+            .content(asJsonString(notValidBookRequestDTO))
             .contentType(MediaType.APPLICATION_JSON)
             .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isBadRequest())
@@ -188,11 +188,11 @@ class BookControllerTest {
   @Test
   void creteShouldReturnBadRequestWhenYearOfBirthBreakingMaxValue()
       throws Exception {
-    CreateBookDTO notValidCreateBookDTO = getTestCreateBookDTO();
-    notValidCreateBookDTO.setYearOfWriting(3000);
+    BookRequestDTO notValidBookRequestDTO = getTestCreateBookDTO();
+    notValidBookRequestDTO.setYearOfWriting(3000);
 
     mvc.perform(post(ENDPOINT)
-            .content(asJsonString(notValidCreateBookDTO))
+            .content(asJsonString(notValidBookRequestDTO))
             .contentType(MediaType.APPLICATION_JSON)
             .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isBadRequest())
@@ -303,8 +303,8 @@ class BookControllerTest {
         .build();
   }
 
-  private BookDTO getTestBookDTO() {
-    return BookDTO.builder()
+  private BookResponseDTO getTestBookDTO() {
+    return BookResponseDTO.builder()
         .id(1L)
         .name("Book")
         .author("Author")
@@ -313,8 +313,8 @@ class BookControllerTest {
         .build();
   }
 
-  private CreateBookDTO getTestCreateBookDTO() {
-    return CreateBookDTO.builder()
+  private BookRequestDTO getTestCreateBookDTO() {
+    return BookRequestDTO.builder()
         .name("Book")
         .author("Author")
         .yearOfWriting(1111)
