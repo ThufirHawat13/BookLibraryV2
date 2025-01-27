@@ -1,7 +1,6 @@
 package com.example.booklibraryv2.services;
 
 import com.example.booklibraryv2.dto.bookDTO.BookRequestDTO;
-import com.example.booklibraryv2.dto.bookDTO.UpdateBookDTO;
 import com.example.booklibraryv2.entities.Book;
 import com.example.booklibraryv2.exceptions.ServiceException;
 import com.example.booklibraryv2.repositories.BookRepository;

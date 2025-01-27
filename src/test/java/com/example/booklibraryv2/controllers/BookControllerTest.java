@@ -12,9 +12,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.example.booklibraryv2.dto.bookDTO.BookResponseDTO;
 import com.example.booklibraryv2.dto.bookDTO.BookRequestDTO;
-import com.example.booklibraryv2.dto.bookDTO.UpdateBookDTO;
+import com.example.booklibraryv2.dto.bookDTO.BookResponseDTO;
 import com.example.booklibraryv2.entities.Book;
 import com.example.booklibraryv2.services.BookService;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -230,7 +229,7 @@ class BookControllerTest {
         .rangeClosed(0, 200)
         .forEach(maxValidLengthPlus1Symbols::append);
 
-    UpdateBookDTO notValidUpdateBookDTO = UpdateBookDTO.builder()
+    BookRequestDTO notValidUpdateBookDTO = BookRequestDTO.builder()
         .name(maxValidLengthPlus1Symbols.toString())
         .author(maxValidLengthPlus1Symbols.toString())
         .build();
@@ -251,8 +250,8 @@ class BookControllerTest {
 
   @Test
   void updateShouldReturnBadRequestWhenYearOfWritingBreakingMaxValue() throws Exception {
-    UpdateBookDTO notValidUpdateBookDTO =
-        UpdateBookDTO.builder()
+    BookRequestDTO notValidUpdateBookDTO =
+        BookRequestDTO.builder()
             .yearOfWriting(3000)
             .build();
 
@@ -270,8 +269,8 @@ class BookControllerTest {
 
   @Test
   void updateShouldReturnBadRequestWhenYearOfBirthBreakingMinValue() throws Exception {
-    UpdateBookDTO notValidUpdateBookDTO =
-        UpdateBookDTO.builder()
+    BookRequestDTO notValidUpdateBookDTO =
+        BookRequestDTO.builder()
             .yearOfWriting(-1)
             .build();
 

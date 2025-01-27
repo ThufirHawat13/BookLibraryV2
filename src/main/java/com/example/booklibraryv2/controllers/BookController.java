@@ -2,13 +2,11 @@ package com.example.booklibraryv2.controllers;
 
 import com.example.booklibraryv2.dto.bookDTO.BookRequestDTO;
 import com.example.booklibraryv2.dto.bookDTO.BookResponseDTO;
-import com.example.booklibraryv2.dto.bookDTO.UpdateBookDTO;
 import com.example.booklibraryv2.dto.validationGroups.CreateGroup;
 import com.example.booklibraryv2.dto.validationGroups.UpdateGroup;
 import com.example.booklibraryv2.exceptions.ServiceException;
 import com.example.booklibraryv2.mappers.BookMapper;
 import com.example.booklibraryv2.services.BookService;
-import jakarta.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
