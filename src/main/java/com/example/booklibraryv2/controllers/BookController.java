@@ -4,6 +4,7 @@ import com.example.booklibraryv2.dto.bookDTO.BookRequestDTO;
 import com.example.booklibraryv2.dto.bookDTO.BookResponseDTO;
 import com.example.booklibraryv2.dto.bookDTO.UpdateBookDTO;
 import com.example.booklibraryv2.dto.validationGroups.CreateGroup;
+import com.example.booklibraryv2.dto.validationGroups.UpdateGroup;
 import com.example.booklibraryv2.exceptions.ServiceException;
 import com.example.booklibraryv2.mappers.BookMapper;
 import com.example.booklibraryv2.services.BookService;
@@ -38,12 +39,14 @@ public class BookController {
   }
 
   @GetMapping("/{id}")
-  public BookResponseDTO getById(@PathVariable Long id) throws ServiceException {
+  public BookResponseDTO getById(
+      @PathVariable("id") Long id) throws ServiceException {
     return BookMapper.convertToBookDTO(bookService.findById(id));
   }
 
   @GetMapping("/find/{searchQuery}")
-  public List<BookResponseDTO> findByNameContains(@PathVariable String searchQuery) {
+  public List<BookResponseDTO> findByNameContains(
+      @PathVariable("searchQuery") String searchQuery) {
     return bookService.findByNameContains(searchQuery).stream()
         .map(BookMapper::convertToBookDTO)
         .collect(Collectors.toList());
@@ -51,7 +54,8 @@ public class BookController {
 
   @PostMapping()
   public ResponseEntity<BookResponseDTO> create(
-      @Validated(CreateGroup.class) @RequestBody BookRequestDTO bookRequestDTO) {
+      @RequestBody @Validated(CreateGroup.class)
+      BookRequestDTO bookRequestDTO) {
     return ResponseEntity
         .status(HttpStatus.CREATED)
         .body(BookMapper.convertToBookDTO(
@@ -59,8 +63,10 @@ public class BookController {
   }
 
   @PatchMapping("/{id}")
-  public ResponseEntity<BookResponseDTO> update(@PathVariable(name = "id") Long id,
-      @RequestBody @Valid UpdateBookDTO updatedFields) throws ServiceException {
+  public ResponseEntity<BookResponseDTO> update(
+      @PathVariable("id") Long id,
+      @RequestBody @Validated(UpdateGroup.class)
+      BookRequestDTO updatedFields) throws ServiceException {
     return ResponseEntity
         .status(HttpStatus.OK)
         .body(BookMapper.convertToBookDTO(
@@ -68,8 +74,8 @@ public class BookController {
   }
 
   @DeleteMapping("/{id}")
-  public ResponseEntity<HttpStatus> delete(@PathVariable(name = "id") Long id)
-      throws ServiceException {
+  public ResponseEntity<HttpStatus> delete(
+      @PathVariable("id") Long id) throws ServiceException {
     bookService.delete(id);
 
     return ResponseEntity

@@ -128,9 +128,9 @@ class BookControllerTest {
         .build();
 
     mvc.perform(post(ENDPOINT)
-        .contentType(MediaType.APPLICATION_JSON)
-        .accept(MediaType.APPLICATION_JSON)
-        .content(asJsonString(notValidBookRequestDTO)))
+            .contentType(MediaType.APPLICATION_JSON)
+            .accept(MediaType.APPLICATION_JSON)
+            .content(asJsonString(notValidBookRequestDTO)))
         .andExpect(status().isBadRequest())
         .andExpect(jsonPath("$.name")
             .value("Name shouldn't be empty!"))
@@ -144,7 +144,7 @@ class BookControllerTest {
   @Test
   void createShouldReturnBadRequestWhenFieldsAreBreakingMaximumLength() throws Exception {
     StringBuilder maxLengthPlus1Symbols = new StringBuilder();
-    IntStream.rangeClosed(0,200)
+    IntStream.rangeClosed(0, 200)
         .forEach(maxLengthPlus1Symbols::append);
 
     BookRequestDTO notValidBookRequestDTO = BookRequestDTO.builder()
@@ -154,9 +154,9 @@ class BookControllerTest {
         .build();
 
     mvc.perform(post(ENDPOINT)
-        .contentType(MediaType.APPLICATION_JSON)
-        .accept(MediaType.APPLICATION_JSON)
-        .content(asJsonString(notValidBookRequestDTO)))
+            .contentType(MediaType.APPLICATION_JSON)
+            .accept(MediaType.APPLICATION_JSON)
+            .content(asJsonString(notValidBookRequestDTO)))
         .andExpect(status().isBadRequest())
         .andExpect(jsonPath("$.name")
             .value("Length shouldn't be greater than 200!"))
@@ -186,7 +186,7 @@ class BookControllerTest {
   }
 
   @Test
-  void creteShouldReturnBadRequestWhenYearOfBirthBreakingMaxValue()
+  void createShouldReturnBadRequestWhenYearOfBirthBreakingMaxValue()
       throws Exception {
     BookRequestDTO notValidBookRequestDTO = getTestCreateBookDTO();
     notValidBookRequestDTO.setYearOfWriting(3000);
@@ -226,7 +226,8 @@ class BookControllerTest {
   @Test
   void updateShouldReturnBadRequestWhenFieldsAreBreakingMaxLength() throws Exception {
     StringBuilder maxValidLengthPlus1Symbols = new StringBuilder();
-    IntStream.rangeClosed(0, 200)
+    IntStream
+        .rangeClosed(0, 200)
         .forEach(maxValidLengthPlus1Symbols::append);
 
     UpdateBookDTO notValidUpdateBookDTO = UpdateBookDTO.builder()
@@ -250,9 +251,10 @@ class BookControllerTest {
 
   @Test
   void updateShouldReturnBadRequestWhenYearOfWritingBreakingMaxValue() throws Exception {
-    UpdateBookDTO notValidUpdateBookDTO = UpdateBookDTO.builder()
-        .yearOfWriting(3000)
-        .build();
+    UpdateBookDTO notValidUpdateBookDTO =
+        UpdateBookDTO.builder()
+            .yearOfWriting(3000)
+            .build();
 
     mvc.perform(patch(ENDPOINT + "/1")
             .contentType(MediaType.APPLICATION_JSON)
@@ -268,14 +270,15 @@ class BookControllerTest {
 
   @Test
   void updateShouldReturnBadRequestWhenYearOfBirthBreakingMinValue() throws Exception {
-    UpdateBookDTO notValidUpdateBookDTO = UpdateBookDTO.builder()
-        .yearOfWriting(-1)
-        .build();
+    UpdateBookDTO notValidUpdateBookDTO =
+        UpdateBookDTO.builder()
+            .yearOfWriting(-1)
+            .build();
 
     mvc.perform(patch(ENDPOINT + "/1")
-        .contentType(MediaType.APPLICATION_JSON)
-        .accept(MediaType.APPLICATION_JSON)
-        .content(asJsonString(notValidUpdateBookDTO)))
+            .contentType(MediaType.APPLICATION_JSON)
+            .accept(MediaType.APPLICATION_JSON)
+            .content(asJsonString(notValidUpdateBookDTO)))
         .andExpect(status().isBadRequest())
         .andExpect(jsonPath("$.yearOfWriting")
             .value("Year of writing shouldn't be lower than 0!"));
@@ -321,8 +324,8 @@ class BookControllerTest {
         .build();
   }
 
-  private UpdateBookDTO getTestUpdateBookDTO() {
-    return UpdateBookDTO.builder()
+  private BookRequestDTO getTestUpdateBookDTO() {
+    return BookRequestDTO.builder()
         .name("Book")
         .author("Author")
         .yearOfWriting(1111)
