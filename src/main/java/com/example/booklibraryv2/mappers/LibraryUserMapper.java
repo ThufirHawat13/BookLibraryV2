@@ -1,6 +1,7 @@
 package com.example.booklibraryv2.mappers;
 
-import com.example.booklibraryv2.dto.LibraryUserDTO;
+import com.example.booklibraryv2.dto.libraryUserDTO.LibraryUserResponseDTO;
+import com.example.booklibraryv2.dto.libraryUserDTO.LibraryUserRequestDTO;
 import com.example.booklibraryv2.entities.Book;
 import com.example.booklibraryv2.entities.LibraryUser;
 import java.util.List;
@@ -10,9 +11,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class LibraryUserMapper {
 
-  public static LibraryUserDTO convertToLibraryUserDTO(
-      LibraryUser libraryUser) {
-    LibraryUserDTO result = new LibraryUserDTO();
+  public static LibraryUserResponseDTO convertToLibraryUserDTO(LibraryUser libraryUser) {
+    LibraryUserResponseDTO result = new LibraryUserResponseDTO();
 
     result.setId(libraryUser.getId());
     result.setName(libraryUser.getName());
@@ -28,13 +28,11 @@ public class LibraryUserMapper {
     return result;
   }
 
-  public static LibraryUser convertToLibraryUser(
-      LibraryUserDTO libraryUserDTO) {
+  public static LibraryUser convertToLibraryUser(LibraryUserRequestDTO libraryUserRequestDTO) {
     LibraryUser result = new LibraryUser();
 
-    result.setId(libraryUserDTO.getId());
-    result.setName(libraryUserDTO.getName());
-    result.setSurname(libraryUserDTO.getSurname());
+    result.setName(libraryUserRequestDTO.getName());
+    result.setSurname(libraryUserRequestDTO.getSurname());
 
     return result;
   }

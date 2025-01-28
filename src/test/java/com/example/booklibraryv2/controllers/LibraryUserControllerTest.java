@@ -11,12 +11,13 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.example.booklibraryv2.dto.LibraryUserDTO;
+import com.example.booklibraryv2.dto.libraryUserDTO.LibraryUserRequestDTO;
 import com.example.booklibraryv2.entities.LibraryUser;
 import com.example.booklibraryv2.services.LibraryUserService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.List;
+import java.util.stream.IntStream;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -91,12 +92,15 @@ class LibraryUserControllerTest {
   }
 
   @Test
-  void createShouldCreateSuccessful() throws Exception {
-    when(libraryUserService.save(getTestLibraryUser()))
+  void createShouldReturnSavedLibraryUser() throws Exception {
+    LibraryUser libraryUserForSave = getTestLibraryUser();
+    libraryUserForSave.setId(null);
+
+    when(libraryUserService.save(libraryUserForSave))
         .thenReturn(getTestLibraryUser());
 
     mvc.perform(post(ENDPOINT)
-            .content(asJsonString(getTestLibraryUserDto()))
+            .content(asJsonString(getTestLibraryUserRequestDto()))
             .contentType(MediaType.APPLICATION_JSON)
             .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isCreated())
@@ -106,54 +110,22 @@ class LibraryUserControllerTest {
         .andExpect(jsonPath("$.bookList").isEmpty());
 
     verify(libraryUserService, times(1))
-        .save(getTestLibraryUser());
+        .save(libraryUserForSave);
   }
 
   @Test
-  void createShouldReturnBadRequestWhenNameIsEmpty() throws Exception {
-    LibraryUserDTO notValidLibraryUserDTO = getTestLibraryUserDto();
-    notValidLibraryUserDTO.setName("");
+  void createShouldReturnBadRequestWhenFieldsAreEmpty() throws Exception {
+    LibraryUserRequestDTO notValidLibraryUserRequestDTO = getTestLibraryUserRequestDto();
+    notValidLibraryUserRequestDTO.setName("");
+    notValidLibraryUserRequestDTO.setSurname("");
 
     mvc.perform(post(ENDPOINT)
-            .content(asJsonString(notValidLibraryUserDTO))
             .contentType(MediaType.APPLICATION_JSON)
-            .accept(MediaType.APPLICATION_JSON))
+            .accept(MediaType.APPLICATION_JSON)
+            .content(asJsonString(notValidLibraryUserRequestDTO)))
         .andExpect(status().isBadRequest())
         .andExpect(jsonPath("$.name")
-            .value("Name shouldn't be empty!"));
-
-    verify(libraryUserService, times(0))
-        .save(any());
-  }
-
-  @Test
-  void createShouldReturnBadRequestWhenNameBreaksMaximumLength() throws Exception {
-    LibraryUserDTO notValidLibraryUserDTO = getTestLibraryUserDto();
-    notValidLibraryUserDTO.setName("SultanSuleimanBertaMariaBenderBeiSultan"
-        + "SuleimanBertaMariaBenderBeiSultanSuleimanBertaMariaBenderBei");
-
-    mvc.perform(post(ENDPOINT)
-            .content(asJsonString(notValidLibraryUserDTO))
-            .contentType(MediaType.APPLICATION_JSON)
-            .accept(MediaType.APPLICATION_JSON))
-        .andExpect(status().isBadRequest())
-        .andExpect(jsonPath("$.name")
-            .value("Length shouldn't be greater than 30!"));
-
-    verify(libraryUserService, times(0))
-        .save(any());
-  }
-
-  @Test
-  void createShouldReturnBadRequestWhenSurnameIsEmpty() throws Exception {
-    LibraryUserDTO notValidLibraryUserDTO = getTestLibraryUserDto();
-    notValidLibraryUserDTO.setSurname("");
-
-    mvc.perform(post(ENDPOINT)
-            .content(asJsonString(notValidLibraryUserDTO))
-            .contentType(MediaType.APPLICATION_JSON)
-            .accept(MediaType.APPLICATION_JSON))
-        .andExpect(status().isBadRequest())
+            .value("Name shouldn't be empty!"))
         .andExpect(jsonPath("$.surname")
             .value("Surname shouldn't be empty!"));
 
@@ -162,16 +134,22 @@ class LibraryUserControllerTest {
   }
 
   @Test
-  void createShouldReturnBadRequestWhenSurnameBreaksMaximumLength() throws Exception {
-    LibraryUserDTO notValidLibraryUserDTO = getTestLibraryUserDto();
-    notValidLibraryUserDTO.setSurname("SultanSuleimanBertaMariaBenderBeiSultan"
-        + "SuleimanBertaMariaBenderBeiSultanSuleimanBertaMariaBenderBei");
+  void createShouldReturnBadRequestWhenFieldsAreBreakingMaximumLength() throws Exception {
+    var maximumLengthPlus1Words = new StringBuilder();
+    IntStream.rangeClosed(0, 30)
+        .forEach(num -> maximumLengthPlus1Words.append("f"));
+
+    var notValidLibraryUserRequestDTO = LibraryUserRequestDTO.builder()
+        .name(maximumLengthPlus1Words.toString())
+        .surname(maximumLengthPlus1Words.toString())
+        .build();
 
     mvc.perform(post(ENDPOINT)
-            .content(asJsonString(notValidLibraryUserDTO))
             .contentType(MediaType.APPLICATION_JSON)
-            .accept(MediaType.APPLICATION_JSON))
-        .andExpect(status().isBadRequest())
+            .accept(MediaType.APPLICATION_JSON)
+            .content(asJsonString(notValidLibraryUserRequestDTO)))
+        .andExpect(jsonPath("$.name")
+            .value("Length shouldn't be greater than 30!"))
         .andExpect(jsonPath("$.surname")
             .value("Length shouldn't be greater than 30!"));
 
@@ -180,12 +158,15 @@ class LibraryUserControllerTest {
   }
 
   @Test
-  void updateShouldUpdateSuccessful() throws Exception {
-    when(libraryUserService.update(getTestLibraryUser()))
+  void updateShouldReturnUpdatedLibraryUser() throws Exception {
+    LibraryUser libraryUserForUpdate = getTestLibraryUser();
+    libraryUserForUpdate.setId(null);
+
+    when(libraryUserService.update(libraryUserForUpdate))
         .thenReturn(getTestLibraryUser());
 
     mvc.perform(patch(ENDPOINT)
-            .content(asJsonString(getTestLibraryUserDto()))
+            .content(asJsonString(getTestLibraryUserRequestDto()))
             .contentType(MediaType.APPLICATION_JSON)
             .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk())
@@ -195,53 +176,22 @@ class LibraryUserControllerTest {
         .andExpect(jsonPath("$.bookList").isEmpty());
 
     verify(libraryUserService, times(1))
-        .update(getTestLibraryUser());
+        .update(libraryUserForUpdate);
   }
 
   @Test
-  void updateShouldReturnBadRequestWhenNameIsEmpty() throws Exception {
-    LibraryUserDTO notValidLibraryUserDTO = getTestLibraryUserDto();
-    notValidLibraryUserDTO.setName("");
+  void updateShouldReturnBadRequestWhenFieldsAreEmpty() throws Exception {
+    LibraryUserRequestDTO notValidLibraryUserResponseDTO = getTestLibraryUserRequestDto();
+    notValidLibraryUserResponseDTO.setName("");
+    notValidLibraryUserResponseDTO.setSurname("");
 
     mvc.perform(patch(ENDPOINT)
-        .content(asJsonString(notValidLibraryUserDTO))
-        .contentType(MediaType.APPLICATION_JSON)
-        .accept(MediaType.APPLICATION_JSON))
+            .content(asJsonString(notValidLibraryUserResponseDTO))
+            .contentType(MediaType.APPLICATION_JSON)
+            .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isBadRequest())
         .andExpect(jsonPath("$.name")
-            .value("Name shouldn't be empty!"));
-
-    verify(libraryUserService, times(0))
-        .update(any());
-  }
-
-  @Test
-  void updateShouldReturnBadRequestWhenNameBreaksMaximumLength() throws Exception {
-    LibraryUserDTO notValidLibraryUserDTO = getTestLibraryUserDto();
-    notValidLibraryUserDTO.setName("-------------------------------");
-
-    mvc.perform(patch(ENDPOINT)
-        .content(asJsonString(notValidLibraryUserDTO))
-        .contentType(MediaType.APPLICATION_JSON)
-        .accept(MediaType.APPLICATION_JSON))
-        .andExpect(status().isBadRequest())
-        .andExpect(jsonPath("$.name")
-            .value("Length shouldn't be greater than 30!"));
-
-    verify(libraryUserService, times(0))
-        .update(any());
-  }
-
-  @Test
-  void updateShouldReturnBadRequestWhenSurnameIsEmpty() throws Exception {
-    LibraryUserDTO notValidLibraryUserDTO = getTestLibraryUserDto();
-    notValidLibraryUserDTO.setSurname("");
-
-    mvc.perform(patch(ENDPOINT)
-        .content(asJsonString(notValidLibraryUserDTO))
-        .contentType(MediaType.APPLICATION_JSON)
-        .accept(MediaType.APPLICATION_JSON))
-        .andExpect(status().isBadRequest())
+            .value("Name shouldn't be empty!"))
         .andExpect(jsonPath("$.surname")
             .value("Surname shouldn't be empty!"));
 
@@ -250,15 +200,23 @@ class LibraryUserControllerTest {
   }
 
   @Test
-  void updateShouldReturnBadRequestWhenSurnameBreaksMaximumLength() throws Exception {
-    LibraryUserDTO notValidLibraryUserDTO = getTestLibraryUserDto();
-    notValidLibraryUserDTO.setSurname("-------------------------------");
+  void updateShouldReturnBadRequestWhenFieldsBreakingMaximumLength() throws Exception {
+    var maximumLengthPlus1Words = new StringBuilder();
+    IntStream.rangeClosed(0, 30)
+        .forEach(num -> maximumLengthPlus1Words.append("f"));
+
+    var notValidLibraryUserRequestDTO = LibraryUserRequestDTO.builder()
+        .name(maximumLengthPlus1Words.toString())
+        .surname(maximumLengthPlus1Words.toString())
+        .build();
 
     mvc.perform(patch(ENDPOINT)
-        .content(asJsonString(notValidLibraryUserDTO))
-        .contentType(MediaType.APPLICATION_JSON)
-        .accept(MediaType.APPLICATION_JSON))
+            .content(asJsonString(notValidLibraryUserRequestDTO))
+            .contentType(MediaType.APPLICATION_JSON)
+            .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("$.name")
+            .value("Length shouldn't be greater than 30!"))
         .andExpect(jsonPath("$.surname")
             .value("Length shouldn't be greater than 30!"));
 
@@ -267,16 +225,12 @@ class LibraryUserControllerTest {
   }
 
   @Test
-  void deleteShouldDeleteSuccessful() throws Exception {
+  void deleteShouldReturnNoContent() throws Exception {
     when(libraryUserService.delete(1L))
         .thenReturn(getTestLibraryUser());
 
     mvc.perform(delete(ENDPOINT + "/1"))
-        .andExpect(status().isOk())
-        .andExpect(jsonPath("$.id").value(1))
-        .andExpect(jsonPath("$.name").value("Name"))
-        .andExpect(jsonPath("$.surname").value("Surname"))
-        .andExpect(jsonPath("$.bookList").isEmpty());
+        .andExpect(status().isNoContent());
 
     verify(libraryUserService, times(1))
         .delete(1L);
@@ -291,12 +245,10 @@ class LibraryUserControllerTest {
         .build();
   }
 
-  private LibraryUserDTO getTestLibraryUserDto() {
-    return LibraryUserDTO.builder()
-        .id(1L)
+  private LibraryUserRequestDTO getTestLibraryUserRequestDto() {
+    return LibraryUserRequestDTO.builder()
         .name("Name")
         .surname("Surname")
-        .bookList(null)
         .build();
   }
 

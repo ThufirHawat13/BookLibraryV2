@@ -30,8 +30,8 @@ public class LibraryUserService {
   }
 
   @Transactional
-  public LibraryUser save(LibraryUser libraryUser) {
-    return libraryUserRepository.save(libraryUser);
+  public LibraryUser save(LibraryUser newLibraryUser) {
+    return libraryUserRepository.save(newLibraryUser);
   }
 
   @Transactional

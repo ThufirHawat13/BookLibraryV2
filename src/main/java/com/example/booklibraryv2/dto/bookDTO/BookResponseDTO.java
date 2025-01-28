@@ -1,6 +1,6 @@
 package com.example.booklibraryv2.dto.bookDTO;
 
-import com.example.booklibraryv2.dto.LibraryUserDTO;
+import com.example.booklibraryv2.dto.libraryUserDTO.LibraryUserResponseDTO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,5 +16,5 @@ public class BookResponseDTO {
   private String name;
   private String author;
   private Integer yearOfWriting;
-  private LibraryUserDTO holder;
+  private LibraryUserResponseDTO holder;
 }

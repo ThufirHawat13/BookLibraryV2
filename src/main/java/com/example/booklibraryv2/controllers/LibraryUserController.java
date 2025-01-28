@@ -1,6 +1,7 @@
 package com.example.booklibraryv2.controllers;
 
-import com.example.booklibraryv2.dto.LibraryUserDTO;
+import com.example.booklibraryv2.dto.libraryUserDTO.LibraryUserResponseDTO;
+import com.example.booklibraryv2.dto.libraryUserDTO.LibraryUserRequestDTO;
 import com.example.booklibraryv2.exceptions.ServiceException;
 import com.example.booklibraryv2.mappers.LibraryUserMapper;
 import com.example.booklibraryv2.services.LibraryUserService;
@@ -27,35 +28,38 @@ public class LibraryUserController {
   private final LibraryUserService libraryUserService;
 
   @GetMapping
-  public List<LibraryUserDTO> getAll() {
+  public List<LibraryUserResponseDTO> getAll() {
     return libraryUserService.getAll().stream()
         .map(LibraryUserMapper::convertToLibraryUserDTO)
         .collect(Collectors.toList());
   }
 
   @GetMapping("/{id}")
-  public LibraryUserDTO getById(@PathVariable Long id) {
+  public LibraryUserResponseDTO getById(@PathVariable Long id) {
     return LibraryUserMapper.convertToLibraryUserDTO(libraryUserService.findById(id));
   }
 
   @GetMapping("/find/{searchQuery}")
-  public List<LibraryUserDTO> findByNameContains(@PathVariable String searchQuery) {
+  public List<LibraryUserResponseDTO> findByNameContains(@PathVariable String searchQuery) {
     return libraryUserService.findByNameContains(searchQuery).stream()
         .map(LibraryUserMapper::convertToLibraryUserDTO)
         .collect(Collectors.toList());
   }
 
   @PostMapping()
-  public ResponseEntity<LibraryUserDTO> create(@RequestBody @Valid LibraryUserDTO libraryUserDTO) {
+  public ResponseEntity<LibraryUserResponseDTO> create(
+      @RequestBody @Valid LibraryUserRequestDTO newLibraryUser) {
     return ResponseEntity
         .status(HttpStatus.CREATED)
-        .body(LibraryUserMapper.convertToLibraryUserDTO(
-            libraryUserService.save(LibraryUserMapper.convertToLibraryUser(libraryUserDTO))));
+        .body(LibraryUserMapper
+            .convertToLibraryUserDTO(
+                libraryUserService.save(LibraryUserMapper
+                    .convertToLibraryUser(newLibraryUser))));
   }
 
   @PatchMapping()
-  public ResponseEntity<LibraryUserDTO> update(
-      @RequestBody @Valid LibraryUserDTO updatedLibraryUser) throws ServiceException {
+  public ResponseEntity<LibraryUserResponseDTO> update(
+      @RequestBody @Valid LibraryUserRequestDTO updatedLibraryUser) throws ServiceException {
     return ResponseEntity
         .status(HttpStatus.OK)
         .body(LibraryUserMapper.convertToLibraryUserDTO(
@@ -63,10 +67,12 @@ public class LibraryUserController {
   }
 
   @DeleteMapping("/{id}")
-  public ResponseEntity<LibraryUserDTO> delete(@PathVariable(name = "id") Long id) {
+  public ResponseEntity<HttpStatus> delete(@PathVariable(name = "id") Long id) {
+    libraryUserService.delete(id);
+
     return ResponseEntity
-        .status(HttpStatus.OK)
-        .body(LibraryUserMapper.convertToLibraryUserDTO(libraryUserService.delete(id)));
+        .status(HttpStatus.NO_CONTENT)
+        .build();
   }
 
 
