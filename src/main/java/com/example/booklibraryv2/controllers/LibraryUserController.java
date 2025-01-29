@@ -57,13 +57,13 @@ public class LibraryUserController {
                     .convertToLibraryUser(newLibraryUser))));
   }
 
-  @PatchMapping()
-  public ResponseEntity<LibraryUserResponseDTO> update(
+  @PatchMapping("/{id}")
+  public ResponseEntity<LibraryUserResponseDTO> update(@PathVariable(name = "id") Long id,
       @RequestBody @Valid LibraryUserRequestDTO updatedLibraryUser) throws ServiceException {
     return ResponseEntity
         .status(HttpStatus.OK)
         .body(LibraryUserMapper.convertToLibraryUserDTO(
-            libraryUserService.update(LibraryUserMapper.convertToLibraryUser(updatedLibraryUser))));
+            libraryUserService.update(id, updatedLibraryUser)));
   }
 
   @DeleteMapping("/{id}")

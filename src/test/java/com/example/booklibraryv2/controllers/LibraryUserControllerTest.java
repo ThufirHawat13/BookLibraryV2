@@ -1,6 +1,7 @@
 package com.example.booklibraryv2.controllers;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -159,13 +160,12 @@ class LibraryUserControllerTest {
 
   @Test
   void updateShouldReturnUpdatedLibraryUser() throws Exception {
-    LibraryUser libraryUserForUpdate = getTestLibraryUser();
-    libraryUserForUpdate.setId(null);
+    var libraryUserForUpdate = getTestLibraryUserRequestDto();
 
-    when(libraryUserService.update(libraryUserForUpdate))
+    when(libraryUserService.update(1L, libraryUserForUpdate))
         .thenReturn(getTestLibraryUser());
 
-    mvc.perform(patch(ENDPOINT)
+    mvc.perform(patch(ENDPOINT + "/1")
             .content(asJsonString(getTestLibraryUserRequestDto()))
             .contentType(MediaType.APPLICATION_JSON)
             .accept(MediaType.APPLICATION_JSON))
@@ -176,17 +176,17 @@ class LibraryUserControllerTest {
         .andExpect(jsonPath("$.bookList").isEmpty());
 
     verify(libraryUserService, times(1))
-        .update(libraryUserForUpdate);
+        .update(1L, libraryUserForUpdate);
   }
 
   @Test
   void updateShouldReturnBadRequestWhenFieldsAreEmpty() throws Exception {
-    LibraryUserRequestDTO notValidLibraryUserResponseDTO = getTestLibraryUserRequestDto();
-    notValidLibraryUserResponseDTO.setName("");
-    notValidLibraryUserResponseDTO.setSurname("");
+    var notValidLibraryUserDTO = getTestLibraryUserRequestDto();
+    notValidLibraryUserDTO.setName("");
+    notValidLibraryUserDTO.setSurname("");
 
-    mvc.perform(patch(ENDPOINT)
-            .content(asJsonString(notValidLibraryUserResponseDTO))
+    mvc.perform(patch(ENDPOINT + "/1")
+            .content(asJsonString(notValidLibraryUserDTO))
             .contentType(MediaType.APPLICATION_JSON)
             .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isBadRequest())
@@ -196,7 +196,7 @@ class LibraryUserControllerTest {
             .value("Surname shouldn't be empty!"));
 
     verify(libraryUserService, times(0))
-        .update(any());
+        .update(anyLong(), any());
   }
 
   @Test
@@ -205,13 +205,13 @@ class LibraryUserControllerTest {
     IntStream.rangeClosed(0, 30)
         .forEach(num -> maximumLengthPlus1Words.append("f"));
 
-    var notValidLibraryUserRequestDTO = LibraryUserRequestDTO.builder()
+    var notValidLibraryUserDTO = LibraryUserRequestDTO.builder()
         .name(maximumLengthPlus1Words.toString())
         .surname(maximumLengthPlus1Words.toString())
         .build();
 
-    mvc.perform(patch(ENDPOINT)
-            .content(asJsonString(notValidLibraryUserRequestDTO))
+    mvc.perform(patch(ENDPOINT + "/1")
+            .content(asJsonString(notValidLibraryUserDTO))
             .contentType(MediaType.APPLICATION_JSON)
             .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isBadRequest())
@@ -221,7 +221,7 @@ class LibraryUserControllerTest {
             .value("Length shouldn't be greater than 30!"));
 
     verify(libraryUserService, times(0))
-        .update(any());
+        .update(anyLong(), any());
   }
 
   @Test
