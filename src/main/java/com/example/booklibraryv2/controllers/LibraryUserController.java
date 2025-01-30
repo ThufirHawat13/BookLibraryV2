@@ -1,13 +1,12 @@
 package com.example.booklibraryv2.controllers;
 
-import com.example.booklibraryv2.dto.libraryUserDTO.LibraryUserResponseDTO;
-import com.example.booklibraryv2.dto.libraryUserDTO.LibraryUserRequestDTO;
+import com.example.booklibraryv2.dto.libraryUserDTO.LibraryUserRequest;
+import com.example.booklibraryv2.dto.libraryUserDTO.LibraryUserResponse;
 import com.example.booklibraryv2.exceptions.ServiceException;
 import com.example.booklibraryv2.mappers.LibraryUserMapper;
 import com.example.booklibraryv2.services.LibraryUserService;
 import jakarta.validation.Valid;
 import java.util.List;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,43 +25,42 @@ import org.springframework.web.bind.annotation.RestController;
 public class LibraryUserController {
 
   private final LibraryUserService libraryUserService;
+  private final LibraryUserMapper libraryUserMapper;
 
   @GetMapping
-  public List<LibraryUserResponseDTO> getAll() {
-    return libraryUserService.getAll().stream()
-        .map(LibraryUserMapper::convertToLibraryUserDTO)
-        .collect(Collectors.toList());
+  public List<LibraryUserResponse> getAll() {
+    return libraryUserMapper.toResponses(
+        libraryUserService.getAll());
   }
 
   @GetMapping("/{id}")
-  public LibraryUserResponseDTO getById(@PathVariable Long id) {
-    return LibraryUserMapper.convertToLibraryUserDTO(libraryUserService.findById(id));
+  public LibraryUserResponse getById(@PathVariable Long id) {
+    return libraryUserMapper.toResponse(
+        libraryUserService.findById(id));
   }
 
   @GetMapping("/find/{searchQuery}")
-  public List<LibraryUserResponseDTO> findByNameContains(@PathVariable String searchQuery) {
-    return libraryUserService.findByNameContains(searchQuery).stream()
-        .map(LibraryUserMapper::convertToLibraryUserDTO)
-        .collect(Collectors.toList());
+  public List<LibraryUserResponse> findByNameContains(@PathVariable String searchQuery) {
+    return libraryUserMapper.toResponses(
+        libraryUserService.findByNameContains(searchQuery));
   }
 
   @PostMapping()
-  public ResponseEntity<LibraryUserResponseDTO> create(
-      @RequestBody @Valid LibraryUserRequestDTO newLibraryUser) {
+  public ResponseEntity<LibraryUserResponse> create(
+      @RequestBody @Valid LibraryUserRequest newLibraryUser) {
     return ResponseEntity
         .status(HttpStatus.CREATED)
-        .body(LibraryUserMapper
-            .convertToLibraryUserDTO(
-                libraryUserService.save(LibraryUserMapper
-                    .convertToLibraryUser(newLibraryUser))));
+        .body(libraryUserMapper.toResponse(
+            libraryUserService.save(
+                libraryUserMapper.toEntity(newLibraryUser))));
   }
 
   @PatchMapping("/{id}")
-  public ResponseEntity<LibraryUserResponseDTO> update(@PathVariable(name = "id") Long id,
-      @RequestBody @Valid LibraryUserRequestDTO updatedLibraryUser) throws ServiceException {
+  public ResponseEntity<LibraryUserResponse> update(@PathVariable(name = "id") Long id,
+      @RequestBody @Valid LibraryUserRequest updatedLibraryUser) throws ServiceException {
     return ResponseEntity
         .status(HttpStatus.OK)
-        .body(LibraryUserMapper.convertToLibraryUserDTO(
+        .body(libraryUserMapper.toResponse(
             libraryUserService.update(id, updatedLibraryUser)));
   }
 

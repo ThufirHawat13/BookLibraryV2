@@ -12,8 +12,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.example.booklibraryv2.dto.libraryUserDTO.LibraryUserRequestDTO;
+import com.example.booklibraryv2.dto.libraryUserDTO.LibraryUserRequest;
 import com.example.booklibraryv2.entities.LibraryUser;
+import com.example.booklibraryv2.mappers.LibraryUserMapperImpl;
 import com.example.booklibraryv2.services.LibraryUserService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -31,7 +32,8 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 @WebMvcTest(excludeAutoConfiguration = SecurityAutoConfiguration.class, useDefaultFilters = false)
-@Import(value = {LibraryUserController.class, CustomExceptionHandler.class})
+@Import(value = {LibraryUserController.class, CustomExceptionHandler.class,
+    LibraryUserMapperImpl.class})
 @ExtendWith(MockitoExtension.class)
 class LibraryUserControllerTest {
 
@@ -116,14 +118,14 @@ class LibraryUserControllerTest {
 
   @Test
   void createShouldReturnBadRequestWhenFieldsAreEmpty() throws Exception {
-    LibraryUserRequestDTO notValidLibraryUserRequestDTO = getTestLibraryUserRequestDto();
-    notValidLibraryUserRequestDTO.setName("");
-    notValidLibraryUserRequestDTO.setSurname("");
+    LibraryUserRequest notValidLibraryUserRequest = getTestLibraryUserRequestDto();
+    notValidLibraryUserRequest.setName("");
+    notValidLibraryUserRequest.setSurname("");
 
     mvc.perform(post(ENDPOINT)
             .contentType(MediaType.APPLICATION_JSON)
             .accept(MediaType.APPLICATION_JSON)
-            .content(asJsonString(notValidLibraryUserRequestDTO)))
+            .content(asJsonString(notValidLibraryUserRequest)))
         .andExpect(status().isBadRequest())
         .andExpect(jsonPath("$.name")
             .value("Name shouldn't be empty!"))
@@ -140,7 +142,7 @@ class LibraryUserControllerTest {
     IntStream.rangeClosed(0, 30)
         .forEach(num -> maximumLengthPlus1Words.append("f"));
 
-    var notValidLibraryUserRequestDTO = LibraryUserRequestDTO.builder()
+    var notValidLibraryUserRequestDTO = LibraryUserRequest.builder()
         .name(maximumLengthPlus1Words.toString())
         .surname(maximumLengthPlus1Words.toString())
         .build();
@@ -205,7 +207,7 @@ class LibraryUserControllerTest {
     IntStream.rangeClosed(0, 30)
         .forEach(num -> maximumLengthPlus1Words.append("f"));
 
-    var notValidLibraryUserDTO = LibraryUserRequestDTO.builder()
+    var notValidLibraryUserDTO = LibraryUserRequest.builder()
         .name(maximumLengthPlus1Words.toString())
         .surname(maximumLengthPlus1Words.toString())
         .build();
@@ -245,8 +247,8 @@ class LibraryUserControllerTest {
         .build();
   }
 
-  private LibraryUserRequestDTO getTestLibraryUserRequestDto() {
-    return LibraryUserRequestDTO.builder()
+  private LibraryUserRequest getTestLibraryUserRequestDto() {
+    return LibraryUserRequest.builder()
         .name("Name")
         .surname("Surname")
         .build();

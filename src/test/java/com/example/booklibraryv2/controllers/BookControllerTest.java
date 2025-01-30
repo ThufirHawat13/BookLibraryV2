@@ -12,9 +12,10 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.example.booklibraryv2.dto.bookDTO.BookRequestDTO;
-import com.example.booklibraryv2.dto.bookDTO.BookResponseDTO;
+import com.example.booklibraryv2.dto.bookDTO.BookRequest;
+import com.example.booklibraryv2.dto.bookDTO.BookResponse;
 import com.example.booklibraryv2.entities.Book;
+import com.example.booklibraryv2.mappers.BookMapperImpl;
 import com.example.booklibraryv2.services.BookService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -32,7 +33,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 @WebMvcTest(excludeAutoConfiguration = SecurityAutoConfiguration.class, useDefaultFilters = false)
-@Import(value = {BookController.class, CustomExceptionHandler.class})
+@Import(value = {BookController.class, CustomExceptionHandler.class, BookMapperImpl.class})
 @ExtendWith(MockitoExtension.class)
 class BookControllerTest {
 
@@ -121,7 +122,7 @@ class BookControllerTest {
 
   @Test
   void createShouldReturnBadRequestWhenFieldsAreEmpty() throws Exception {
-    BookRequestDTO notValidBookRequestDTO = BookRequestDTO.builder()
+    BookRequest notValidBookRequest = BookRequest.builder()
         .name("")
         .author("")
         .build();
@@ -129,7 +130,7 @@ class BookControllerTest {
     mvc.perform(post(ENDPOINT)
             .contentType(MediaType.APPLICATION_JSON)
             .accept(MediaType.APPLICATION_JSON)
-            .content(asJsonString(notValidBookRequestDTO)))
+            .content(asJsonString(notValidBookRequest)))
         .andExpect(status().isBadRequest())
         .andExpect(jsonPath("$.name")
             .value("Name shouldn't be empty!"))
@@ -146,7 +147,7 @@ class BookControllerTest {
     IntStream.rangeClosed(0, 200)
         .forEach(maxLengthPlus1Symbols::append);
 
-    BookRequestDTO notValidBookRequestDTO = BookRequestDTO.builder()
+    BookRequest notValidBookRequest = BookRequest.builder()
         .name(maxLengthPlus1Symbols.toString())
         .author(maxLengthPlus1Symbols.toString())
         .yearOfWriting(1111)
@@ -155,7 +156,7 @@ class BookControllerTest {
     mvc.perform(post(ENDPOINT)
             .contentType(MediaType.APPLICATION_JSON)
             .accept(MediaType.APPLICATION_JSON)
-            .content(asJsonString(notValidBookRequestDTO)))
+            .content(asJsonString(notValidBookRequest)))
         .andExpect(status().isBadRequest())
         .andExpect(jsonPath("$.name")
             .value("Length shouldn't be greater than 200!"))
@@ -169,11 +170,11 @@ class BookControllerTest {
   @Test
   void createShouldReturnBadRequestWhenYearOfBirthBreakingMinValue()
       throws Exception {
-    BookRequestDTO notValidBookRequestDTO = getTestCreateBookDTO();
-    notValidBookRequestDTO.setYearOfWriting(-1);
+    BookRequest notValidBookRequest = getTestCreateBookDTO();
+    notValidBookRequest.setYearOfWriting(-1);
 
     mvc.perform(post(ENDPOINT)
-            .content(asJsonString(notValidBookRequestDTO))
+            .content(asJsonString(notValidBookRequest))
             .contentType(MediaType.APPLICATION_JSON)
             .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isBadRequest())
@@ -187,11 +188,11 @@ class BookControllerTest {
   @Test
   void createShouldReturnBadRequestWhenYearOfBirthBreakingMaxValue()
       throws Exception {
-    BookRequestDTO notValidBookRequestDTO = getTestCreateBookDTO();
-    notValidBookRequestDTO.setYearOfWriting(3000);
+    BookRequest notValidBookRequest = getTestCreateBookDTO();
+    notValidBookRequest.setYearOfWriting(3000);
 
     mvc.perform(post(ENDPOINT)
-            .content(asJsonString(notValidBookRequestDTO))
+            .content(asJsonString(notValidBookRequest))
             .contentType(MediaType.APPLICATION_JSON)
             .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isBadRequest())
@@ -229,7 +230,7 @@ class BookControllerTest {
         .rangeClosed(0, 200)
         .forEach(maxValidLengthPlus1Symbols::append);
 
-    BookRequestDTO notValidUpdateBookDTO = BookRequestDTO.builder()
+    BookRequest notValidUpdateBookDTO = BookRequest.builder()
         .name(maxValidLengthPlus1Symbols.toString())
         .author(maxValidLengthPlus1Symbols.toString())
         .build();
@@ -250,8 +251,8 @@ class BookControllerTest {
 
   @Test
   void updateShouldReturnBadRequestWhenYearOfWritingBreakingMaxValue() throws Exception {
-    BookRequestDTO notValidUpdateBookDTO =
-        BookRequestDTO.builder()
+    BookRequest notValidUpdateBookDTO =
+        BookRequest.builder()
             .yearOfWriting(3000)
             .build();
 
@@ -269,8 +270,8 @@ class BookControllerTest {
 
   @Test
   void updateShouldReturnBadRequestWhenYearOfBirthBreakingMinValue() throws Exception {
-    BookRequestDTO notValidUpdateBookDTO =
-        BookRequestDTO.builder()
+    BookRequest notValidUpdateBookDTO =
+        BookRequest.builder()
             .yearOfWriting(-1)
             .build();
 
@@ -305,8 +306,8 @@ class BookControllerTest {
         .build();
   }
 
-  private BookResponseDTO getTestBookDTO() {
-    return BookResponseDTO.builder()
+  private BookResponse getTestBookDTO() {
+    return BookResponse.builder()
         .id(1L)
         .name("Book")
         .author("Author")
@@ -315,16 +316,16 @@ class BookControllerTest {
         .build();
   }
 
-  private BookRequestDTO getTestCreateBookDTO() {
-    return BookRequestDTO.builder()
+  private BookRequest getTestCreateBookDTO() {
+    return BookRequest.builder()
         .name("Book")
         .author("Author")
         .yearOfWriting(1111)
         .build();
   }
 
-  private BookRequestDTO getTestUpdateBookDTO() {
-    return BookRequestDTO.builder()
+  private BookRequest getTestUpdateBookDTO() {
+    return BookRequest.builder()
         .name("Book")
         .author("Author")
         .yearOfWriting(1111)

@@ -1,6 +1,6 @@
 package com.example.booklibraryv2.services;
 
-import com.example.booklibraryv2.dto.bookDTO.BookRequestDTO;
+import com.example.booklibraryv2.dto.bookDTO.BookRequest;
 import com.example.booklibraryv2.entities.Book;
 import com.example.booklibraryv2.exceptions.ServiceException;
 import com.example.booklibraryv2.repositories.BookRepository;
@@ -39,14 +39,14 @@ public class BookService {
   }
 
   @Transactional
-  public Book update(Long id, BookRequestDTO updateBookDTO) throws ServiceException {
+  public Book update(Long id, BookRequest updateBookDTO) throws ServiceException {
     Book updatedBook = updateFields(findByIdOrThrow(id), updateBookDTO);
     log.info("updated book: {}", updatedBook);
 
     return updatedBook;
   }
 
-  private Book updateFields(Book bookForUpdate, BookRequestDTO updateBookDTO) {
+  private Book updateFields(Book bookForUpdate, BookRequest updateBookDTO) {
     Optional.ofNullable(updateBookDTO.getName())
         .ifPresent(bookForUpdate::setName);
     Optional.ofNullable(updateBookDTO.getAuthor())

@@ -1,6 +1,6 @@
 package com.example.booklibraryv2.services;
 
-import com.example.booklibraryv2.dto.libraryUserDTO.LibraryUserRequestDTO;
+import com.example.booklibraryv2.dto.libraryUserDTO.LibraryUserRequest;
 import com.example.booklibraryv2.entities.LibraryUser;
 import com.example.booklibraryv2.exceptions.ServiceException;
 import com.example.booklibraryv2.repositories.LibraryUserRepository;
@@ -38,7 +38,7 @@ public class LibraryUserService {
   }
 
   @Transactional
-  public LibraryUser update(Long id, LibraryUserRequestDTO updatedFields) throws ServiceException {
+  public LibraryUser update(Long id, LibraryUserRequest updatedFields) throws ServiceException {
     var updatedUser = updateFields(findByIdOrThrow(id), updatedFields);
     log.info("updated library user: {}", updatedUser);
 
@@ -46,7 +46,7 @@ public class LibraryUserService {
   }
 
   private LibraryUser updateFields(LibraryUser userForUpdate,
-      LibraryUserRequestDTO updatedFields) {
+      LibraryUserRequest updatedFields) {
     Optional.ofNullable(updatedFields.getName())
         .ifPresent(userForUpdate::setName);
     Optional.ofNullable(updatedFields.getSurname())
