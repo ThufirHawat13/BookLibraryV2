@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -51,32 +52,26 @@ public class BookController {
   }
 
   @PostMapping()
-  public ResponseEntity<BookResponse> create(
+  @ResponseStatus(HttpStatus.CREATED)
+  public BookResponse create(
       @RequestBody @Validated(CreateGroup.class) BookRequest newBook) {
-    return ResponseEntity
-        .status(HttpStatus.CREATED)
-        .body(bookMapper.toResponse(
-            bookService.save(bookMapper.toEntity(newBook))));
+    return bookMapper.toResponse(
+        bookService.save(bookMapper.toEntity(newBook)));
   }
 
   @PatchMapping("/{id}")
-  public ResponseEntity<BookResponse> update(
+  public BookResponse update(
       @PathVariable("id") Long id,
       @RequestBody @Validated(UpdateGroup.class) BookRequest updatedFields)
       throws ServiceException {
-    return ResponseEntity
-        .status(HttpStatus.OK)
-        .body(bookMapper.toResponse(
-            bookService.update(id, updatedFields)));
+    return bookMapper.toResponse(
+        bookService.update(id, updatedFields));
   }
 
   @DeleteMapping("/{id}")
-  public ResponseEntity<HttpStatus> delete(
+  @ResponseStatus(HttpStatus.NO_CONTENT)
+  public void delete(
       @PathVariable("id") Long id) throws ServiceException {
     bookService.delete(id);
-
-    return ResponseEntity
-        .status(HttpStatus.NO_CONTENT)
-        .build();
   }
 }

@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -27,6 +28,7 @@ public class LibraryUserController {
   private final LibraryUserService libraryUserService;
   private final LibraryUserMapper libraryUserMapper;
 
+
   @GetMapping
   public List<LibraryUserResponse> getAll() {
     return libraryUserMapper.toResponses(
@@ -34,43 +36,41 @@ public class LibraryUserController {
   }
 
   @GetMapping("/{id}")
-  public LibraryUserResponse getById(@PathVariable Long id) {
+  public LibraryUserResponse getById(
+      @PathVariable Long id) {
     return libraryUserMapper.toResponse(
         libraryUserService.findById(id));
   }
 
   @GetMapping("/find/{searchQuery}")
-  public List<LibraryUserResponse> findByNameContains(@PathVariable String searchQuery) {
+  public List<LibraryUserResponse> findByNameContains(
+      @PathVariable String searchQuery) {
     return libraryUserMapper.toResponses(
         libraryUserService.findByNameContains(searchQuery));
   }
 
   @PostMapping()
-  public ResponseEntity<LibraryUserResponse> create(
+  @ResponseStatus(HttpStatus.CREATED)
+  public LibraryUserResponse create(
       @RequestBody @Valid LibraryUserRequest newLibraryUser) {
-    return ResponseEntity
-        .status(HttpStatus.CREATED)
-        .body(libraryUserMapper.toResponse(
-            libraryUserService.save(
-                libraryUserMapper.toEntity(newLibraryUser))));
+    return libraryUserMapper.toResponse(
+        libraryUserService.save(
+            libraryUserMapper.toEntity(newLibraryUser)));
   }
 
   @PatchMapping("/{id}")
-  public ResponseEntity<LibraryUserResponse> update(@PathVariable(name = "id") Long id,
+  public LibraryUserResponse update(
+      @PathVariable(name = "id") Long id,
       @RequestBody @Valid LibraryUserRequest updatedLibraryUser) throws ServiceException {
-    return ResponseEntity
-        .status(HttpStatus.OK)
-        .body(libraryUserMapper.toResponse(
-            libraryUserService.update(id, updatedLibraryUser)));
+    return libraryUserMapper.toResponse(
+        libraryUserService.update(id, updatedLibraryUser));
   }
 
   @DeleteMapping("/{id}")
-  public ResponseEntity<HttpStatus> delete(@PathVariable(name = "id") Long id) {
+  @ResponseStatus(HttpStatus.NO_CONTENT)
+  public void delete(
+      @PathVariable(name = "id") Long id) {
     libraryUserService.delete(id);
-
-    return ResponseEntity
-        .status(HttpStatus.NO_CONTENT)
-        .build();
   }
 
 
