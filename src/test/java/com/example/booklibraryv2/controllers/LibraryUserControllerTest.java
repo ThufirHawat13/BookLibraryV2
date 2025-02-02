@@ -182,6 +182,27 @@ class LibraryUserControllerTest {
   }
 
   @Test
+  void updateShouldReturnUpdatedEntityWhenFieldsAreNull() throws Exception {
+    var libraryUserRequestWithNullFields = new LibraryUserRequest();
+
+    when(libraryUserService.update(1L, libraryUserRequestWithNullFields))
+        .thenReturn(getTestLibraryUser());
+
+    mvc.perform(patch(ENDPOINT + "/1")
+        .contentType(MediaType.APPLICATION_JSON)
+        .accept(MediaType.APPLICATION_JSON)
+        .content(asJsonString(libraryUserRequestWithNullFields)))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.id").value(1))
+        .andExpect(jsonPath("$.name").value("Name"))
+        .andExpect(jsonPath("$.surname").value("Surname"))
+        .andExpect(jsonPath("$.bookList").isEmpty());
+
+    verify(libraryUserService, times(1))
+        .update(1L, libraryUserRequestWithNullFields);
+  }
+
+  @Test
   void updateShouldReturnBadRequestWhenFieldsAreEmpty() throws Exception {
     var notValidLibraryUserDTO = getTestLibraryUserRequestDto();
     notValidLibraryUserDTO.setName("");
@@ -193,9 +214,9 @@ class LibraryUserControllerTest {
             .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isBadRequest())
         .andExpect(jsonPath("$.name")
-            .value("Name shouldn't be empty!"))
+            .value("Name is not valid!"))
         .andExpect(jsonPath("$.surname")
-            .value("Surname shouldn't be empty!"));
+            .value("Surname is not valid!"));
 
     verify(libraryUserService, times(0))
         .update(anyLong(), any());
