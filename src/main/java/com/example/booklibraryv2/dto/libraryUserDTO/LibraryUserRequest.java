@@ -1,6 +1,9 @@
 package com.example.booklibraryv2.dto.libraryUserDTO;
 
+import com.example.booklibraryv2.dto.validationGroups.CreateGroup;
+import com.example.booklibraryv2.dto.validationGroups.UpdateGroup;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,11 +15,20 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class LibraryUserRequest {
+  //TODO add groups
 
-  @NotBlank(message = "Name shouldn't be empty!")
-  @Size(max = 30, message = "Length shouldn't be greater than 30!")
+  @NotNull(message = "Name shouldn't be null!",
+  groups = CreateGroup.class)
+  @NotBlank(message = "Name shouldn't be empty!",
+  groups = {CreateGroup.class, UpdateGroup.class})
+  @Size(max = 30, message = "Length shouldn't be greater than 30!",
+  groups = {CreateGroup.class, UpdateGroup.class})
   private String name;
-  @NotBlank(message = "Surname shouldn't be empty!")
-  @Size(max = 30, message = "Length shouldn't be greater than 30!")
+  @NotNull(message = "Surname shouldn't be empty",
+  groups = CreateGroup.class)
+  @NotBlank(message = "Surname shouldn't be empty!",
+  groups = {CreateGroup.class, UpdateGroup.class})
+  @Size(max = 30, message = "Length shouldn't be greater than 30!",
+  groups = {CreateGroup.class, UpdateGroup.class})
   private String surname;
 }
