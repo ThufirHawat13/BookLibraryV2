@@ -16,7 +16,6 @@ public interface LibraryUserService {
 
   LibraryUser save(LibraryUser newLibraryUser);
 
-  @Transactional
   LibraryUser update(Long id, LibraryUserRequest updatedFields) throws ServiceException;
 
   LibraryUser delete(Long id);
