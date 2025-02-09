@@ -3,71 +3,21 @@ package com.example.booklibraryv2.services;
 import com.example.booklibraryv2.dto.libraryUserDTO.LibraryUserRequest;
 import com.example.booklibraryv2.entities.LibraryUser;
 import com.example.booklibraryv2.exceptions.ServiceException;
-import com.example.booklibraryv2.repositories.LibraryUserRepository;
 import java.util.List;
-import java.util.Optional;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-@Service
-@RequiredArgsConstructor
-@Slf4j
-public class LibraryUserService {
+public interface LibraryUserService {
 
-  private final LibraryUserRepository libraryUserRepository;
+  List<LibraryUser> getAll();
 
-  public List<LibraryUser> getAll() {
-    return libraryUserRepository.findAll();
-  }
+  LibraryUser findById(Long id);
 
-  public LibraryUser findById(Long id) {
-    return findByIdOrThrow(id);
-  }
+  List<LibraryUser> findByNameContains(String searchQuery);
 
-  public List<LibraryUser> findByNameContains(String searchQuery) {
-    return libraryUserRepository.findByNameContains(searchQuery);
-  }
-
-  public LibraryUser save(LibraryUser newLibraryUser) {
-    var savedUser = libraryUserRepository.save(newLibraryUser);
-    log.info("saved library user: {}", savedUser);
-
-    return savedUser;
-  }
+  LibraryUser save(LibraryUser newLibraryUser);
 
   @Transactional
-  public LibraryUser update(Long id, LibraryUserRequest updatedFields) throws ServiceException {
-    var updatedUser = updateFields(findByIdOrThrow(id), updatedFields);
-    log.info("updated library user: {}", updatedUser);
+  LibraryUser update(Long id, LibraryUserRequest updatedFields) throws ServiceException;
 
-    return updatedUser;
-  }
-
-  private LibraryUser updateFields(LibraryUser userForUpdate,
-      LibraryUserRequest updatedFields) {
-    Optional.ofNullable(updatedFields.getName())
-        .ifPresent(userForUpdate::setName);
-    Optional.ofNullable(updatedFields.getSurname())
-        .ifPresent(updatedFields::setSurname);
-
-    return userForUpdate;
-  }
-
-  public LibraryUser delete(Long id) {
-    LibraryUser libraryUser = libraryUserRepository.findById(id)
-        .orElseThrow(() -> new ServiceException("Library user with id=%s isn't found!"
-            .formatted(id)));
-    libraryUserRepository.deleteById(id);
-
-    return libraryUser;
-  }
-
-  private LibraryUser findByIdOrThrow(Long id) throws ServiceException {
-    return libraryUserRepository.findById(id)
-        .orElseThrow(() -> new ServiceException(
-            "Library user with id=%s isn't found!"
-                .formatted(id)));
-  }
+  LibraryUser delete(Long id);
 }
