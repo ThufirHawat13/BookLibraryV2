@@ -128,9 +128,9 @@ class LibraryUserControllerTest {
             .content(asJsonString(notValidLibraryUserRequest)))
         .andExpect(status().isBadRequest())
         .andExpect(jsonPath("$.name")
-            .value("Name shouldn't be empty!"))
+            .value("Name is not valid!"))
         .andExpect(jsonPath("$.surname")
-            .value("Surname shouldn't be empty!"));
+            .value("Surname is not valid!"));
 
     verify(libraryUserService, times(0))
         .save(any());
@@ -138,7 +138,8 @@ class LibraryUserControllerTest {
 
   @Test
   void createShouldReturnBadRequestWhenFieldsAreBreakingMaximumLength() throws Exception {
-    var maximumLengthPlus1Words = new StringBuilder();
+    var maximumLengthPlus1Words = new StringBuilder("F");
+
     IntStream.rangeClosed(0, 30)
         .forEach(num -> maximumLengthPlus1Words.append("f"));
 
@@ -224,7 +225,8 @@ class LibraryUserControllerTest {
 
   @Test
   void updateShouldReturnBadRequestWhenFieldsBreakingMaximumLength() throws Exception {
-    var maximumLengthPlus1Words = new StringBuilder();
+    var maximumLengthPlus1Words = new StringBuilder("F");
+
     IntStream.rangeClosed(0, 30)
         .forEach(num -> maximumLengthPlus1Words.append("f"));
 

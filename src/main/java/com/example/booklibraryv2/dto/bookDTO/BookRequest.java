@@ -18,15 +18,11 @@ import lombok.NoArgsConstructor;
 @Builder
 public class BookRequest {
 
-  @NotNull(message = "Name shouldn't be null!",
-      groups = CreateGroup.class)
   @NotBlank(message = "Name shouldn't be empty!",
       groups = CreateGroup.class)
   @Size(max = 200, message = "Length shouldn't be greater than 200!",
       groups = {CreateGroup.class, UpdateGroup.class})
   private String name;
-  @NotNull(message = "Author designation shouldn't be null!",
-      groups = CreateGroup.class)
   @NotBlank(message = "Author designation shouldn't be empty!",
       groups = CreateGroup.class)
   @Size(max = 200, message = "Length shouldn't be greater than 200!",
