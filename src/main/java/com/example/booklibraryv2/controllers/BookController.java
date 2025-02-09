@@ -25,7 +25,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/books")
 @RequiredArgsConstructor
 public class BookController {
-  //TODO add swagger
 
   private final BookService bookService;
   private final BookMapper bookMapper;
