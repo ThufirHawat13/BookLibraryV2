@@ -43,6 +43,7 @@ class LibraryUserControllerTest {
   private LibraryUserService libraryUserService;
   private final String ENDPOINT = "/library-users";
 
+
   @Test
   void getAllShouldReturnLibraryUserDtoList() throws Exception {
     when(libraryUserService.getAll())

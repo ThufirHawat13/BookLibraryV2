@@ -20,12 +20,14 @@ class BookRepositoryDatJpaTest {
   @Autowired
   private BookRepository bookRepository;
 
+
   @BeforeEach
   void setUp() {
     bookRepository.saveAll(List.of(
         getTestBookWithCustomName("test1"),
         getTestBookWithCustomName("test2"),
-        getTestBookWithCustomName("book")));
+        getTestBookWithCustomName("book"))
+    );
   }
 
   @AfterEach
@@ -38,7 +40,8 @@ class BookRepositoryDatJpaTest {
     Assertions.assertEquals(List.of(
         getTestBookWithCustomName("test1"),
         getTestBookWithCustomName("test2")),
-        bookRepository.findByNameContains("test"));
+        bookRepository.findByNameContains("test")
+    );
   }
 
   @Test
