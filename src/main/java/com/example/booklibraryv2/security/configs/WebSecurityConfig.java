@@ -3,6 +3,7 @@ package com.example.booklibraryv2.security.configs;
 import com.example.booklibraryv2.security.entitites.Role;
 import com.example.booklibraryv2.security.jwt.JwtAuthenticationFilter;
 import com.example.booklibraryv2.security.services.CustomUserDetailService;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,10 +23,10 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class WebSecurityConfig {
+
   private final JwtAuthenticationFilter jwtAuthenticationFilter;
   private final CustomUserDetailService userDetailsService;
-  private final String BOOKS_ENDPOINT = "/books";
-  private final String LIBRARY_USER_ENDPOINT = "/libraryUsers";
+
 
   @Bean
   public SecurityFilterChain applicationSecurity(HttpSecurity http) throws Exception {
@@ -34,32 +35,45 @@ public class WebSecurityConfig {
     http.formLogin(AbstractHttpConfigurer::disable);
 
     http.sessionManagement(session ->
-            session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
     http.csrf(AbstractHttpConfigurer::disable)
         .cors(AbstractHttpConfigurer::disable);
 
     http.authorizeHttpRequests(request ->
         request
+            .requestMatchers("/v3/api-docs/**")
+            .permitAll()
+            .requestMatchers("/swagger-ui/**")
+            .permitAll()
             .requestMatchers("/error", "/auth/login")
             .permitAll()
             .requestMatchers("/auth/refresh-tokens")
             .authenticated()
-            .requestMatchers(HttpMethod.POST, BOOKS_ENDPOINT + "/add")
+            .requestMatchers(HttpMethod.POST, BaseEndpoint.BOOKS.getEndpoint() + "/add")
             .hasRole(Role.ADMIN.name())
-            .requestMatchers(HttpMethod.PATCH, BOOKS_ENDPOINT + "/update")
+            .requestMatchers(HttpMethod.PATCH, BaseEndpoint.BOOKS.getEndpoint() + "/update")
             .hasRole(Role.ADMIN.name())
-            .requestMatchers(HttpMethod.DELETE, BOOKS_ENDPOINT + "/delete")
+            .requestMatchers(HttpMethod.DELETE, BaseEndpoint.BOOKS.getEndpoint() + "/delete")
             .hasRole(Role.ADMIN.name())
-            .requestMatchers(HttpMethod.POST, LIBRARY_USER_ENDPOINT + "/add")
+            .requestMatchers(HttpMethod.POST, BaseEndpoint.LIBRARY_USER.getEndpoint() + "/add")
             .hasRole(Role.ADMIN.name())
-            .requestMatchers(HttpMethod.PATCH, LIBRARY_USER_ENDPOINT + "/update")
+            .requestMatchers(HttpMethod.PATCH, BaseEndpoint.LIBRARY_USER.getEndpoint() + "/update")
             .hasRole(Role.ADMIN.name())
-            .requestMatchers(HttpMethod.DELETE, LIBRARY_USER_ENDPOINT + "/delete")
+            .requestMatchers(HttpMethod.DELETE, BaseEndpoint.LIBRARY_USER.getEndpoint() + "/delete")
             .hasRole(Role.ADMIN.name())
             .anyRequest().hasAnyRole(Role.ADMIN.name(), Role.USER.name()));
 
     return http.build();
+  }
+
+  @RequiredArgsConstructor
+  @Getter
+  private enum BaseEndpoint {
+    BOOKS("/books"),
+    LIBRARY_USER("/libraryUsers");
+
+    private final String endpoint;
   }
 
   @Bean
