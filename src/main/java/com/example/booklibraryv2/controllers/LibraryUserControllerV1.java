@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/library-users")
-public class LibraryUserController {
+public class LibraryUserControllerV1 {
 
   private final LibraryUserService libraryUserService;
   private final LibraryUserMapper libraryUserMapper;

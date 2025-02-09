@@ -5,7 +5,6 @@ import com.example.booklibraryv2.security.models.LoginResponse;
 import com.example.booklibraryv2.security.services.AuthService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpHeaders;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,8 +14,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("api/v1/auth")
-public class AuthController {
+@RequestMapping("/api/v1/auth")
+public class AuthControllerV1 {
   private final AuthService authService;
 
   @PostMapping("/login")

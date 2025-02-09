@@ -33,9 +33,9 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 @WebMvcTest(excludeAutoConfiguration = SecurityAutoConfiguration.class, useDefaultFilters = false)
-@Import(value = {BookController.class, CustomExceptionHandler.class, BookMapperImpl.class})
+@Import(value = {BookControllerV1.class, CustomExceptionHandler.class, BookMapperImpl.class})
 @ExtendWith(MockitoExtension.class)
-class BookControllerTest {
+class BookControllerV1Test {
 
   @Autowired
   private MockMvc mvc;
