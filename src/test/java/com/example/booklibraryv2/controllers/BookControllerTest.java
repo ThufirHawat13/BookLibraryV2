@@ -41,7 +41,7 @@ class BookControllerTest {
   private MockMvc mvc;
   @MockitoBean
   private BookService bookService;
-  private final String ENDPOINT = "/books";
+  private final String ENDPOINT = "/api/v1/books";
 
 
   @Test

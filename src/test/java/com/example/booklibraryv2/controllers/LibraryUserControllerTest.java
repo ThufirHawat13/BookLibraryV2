@@ -41,7 +41,7 @@ class LibraryUserControllerTest {
   private MockMvc mvc;
   @MockitoBean
   private LibraryUserService libraryUserService;
-  private final String ENDPOINT = "/library-users";
+  private final String ENDPOINT = "/api/v1/library-users";
 
 
   @Test

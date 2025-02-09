@@ -46,21 +46,21 @@ public class WebSecurityConfig {
             .permitAll()
             .requestMatchers("/swagger-ui/**")
             .permitAll()
-            .requestMatchers("/error", "/auth/login")
+            .requestMatchers("/error", BaseEndpoint.AUTH_V1.getEndpoint() + "/login")
             .permitAll()
-            .requestMatchers("/auth/refresh-tokens")
+            .requestMatchers(BaseEndpoint.AUTH_V1.getEndpoint() + "/refresh-tokens")
             .authenticated()
-            .requestMatchers(HttpMethod.POST, BaseEndpoint.BOOKS.getEndpoint() + "/add")
+            .requestMatchers(HttpMethod.POST, BaseEndpoint.BOOKS_V1.getEndpoint() + "/add")
             .hasRole(Role.ADMIN.name())
-            .requestMatchers(HttpMethod.PATCH, BaseEndpoint.BOOKS.getEndpoint() + "/update")
+            .requestMatchers(HttpMethod.PATCH, BaseEndpoint.BOOKS_V1.getEndpoint() + "/update")
             .hasRole(Role.ADMIN.name())
-            .requestMatchers(HttpMethod.DELETE, BaseEndpoint.BOOKS.getEndpoint() + "/delete")
+            .requestMatchers(HttpMethod.DELETE, BaseEndpoint.BOOKS_V1.getEndpoint() + "/delete")
             .hasRole(Role.ADMIN.name())
-            .requestMatchers(HttpMethod.POST, BaseEndpoint.LIBRARY_USER.getEndpoint() + "/add")
+            .requestMatchers(HttpMethod.POST, BaseEndpoint.LIBRARY_USERS_V1.getEndpoint() + "/add")
             .hasRole(Role.ADMIN.name())
-            .requestMatchers(HttpMethod.PATCH, BaseEndpoint.LIBRARY_USER.getEndpoint() + "/update")
+            .requestMatchers(HttpMethod.PATCH, BaseEndpoint.LIBRARY_USERS_V1.getEndpoint() + "/update")
             .hasRole(Role.ADMIN.name())
-            .requestMatchers(HttpMethod.DELETE, BaseEndpoint.LIBRARY_USER.getEndpoint() + "/delete")
+            .requestMatchers(HttpMethod.DELETE, BaseEndpoint.LIBRARY_USERS_V1.getEndpoint() + "/delete")
             .hasRole(Role.ADMIN.name())
             .anyRequest().hasAnyRole(Role.ADMIN.name(), Role.USER.name()));
 
@@ -70,8 +70,9 @@ public class WebSecurityConfig {
   @RequiredArgsConstructor
   @Getter
   private enum BaseEndpoint {
-    BOOKS("/books"),
-    LIBRARY_USER("/libraryUsers");
+    BOOKS_V1("api/v1/books"),
+    LIBRARY_USERS_V1("api/v1/libraryUsers"),
+    AUTH_V1("api/v1/auth");
 
     private final String endpoint;
   }
