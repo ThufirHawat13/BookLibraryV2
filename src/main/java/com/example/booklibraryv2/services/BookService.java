@@ -1,58 +1,22 @@
 package com.example.booklibraryv2.services;
 
+import com.example.booklibraryv2.dto.bookDTO.BookRequest;
 import com.example.booklibraryv2.entities.Book;
 import com.example.booklibraryv2.exceptions.ServiceException;
-import com.example.booklibraryv2.repositories.BookRepository;
-import java.rmi.ServerException;
 import java.util.List;
-import java.util.Optional;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-@Service
-@Transactional(readOnly = true)
-@RequiredArgsConstructor
-public class BookService {
-  private final BookRepository bookRepository;
+public interface BookService {
 
-  public List<Book> getAll() {
-    return bookRepository.findAll();
-  }
+  List<Book> getAll();
 
-  public Book findById(Long id) throws ServiceException {
-    return bookRepository.findById(id)
-        .orElseThrow(() -> new ServiceException("Book with id = %d isn't found!".formatted(id)));
-  }
+  Book findById(Long id) throws ServiceException;
 
-  public List<Book> findByNameContains(String searchQuery) {
-    return bookRepository.findByNameContains(searchQuery);
-  }
+  List<Book> findByNameContains(String searchQuery);
 
-  @Transactional
-  public Book save(Book book) {
-    return bookRepository.save(book);
-  }
+  Book save(Book book);
 
-  @Transactional
-  public Book update(Book updatedBook) throws ServiceException {
+  Book update(Long id, BookRequest updateBookDTO) throws ServiceException;
 
-    if (bookRepository.existsById(updatedBook.getId())) {
-      return bookRepository.save(updatedBook);
-    } else {
-      throw new ServiceException(
-          "Book with id=%s isn't exists!".formatted(updatedBook.getId()));
-    }
-  }
-
-  @Transactional
-  public Book delete(Long id) throws ServiceException {
-    Book bookForDelete = bookRepository.findById(id)
-        .orElseThrow(() -> new ServiceException(
-            "Book with id=%s isn't exists!".formatted(id)));
-
-    bookRepository.deleteById(id);
-
-    return bookForDelete;
-  }
+  void delete(Long id) throws ServiceException;
 }

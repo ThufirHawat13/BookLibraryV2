@@ -34,7 +34,8 @@ public class CustomExceptionHandler {
 
   @ResponseStatus(HttpStatus.BAD_REQUEST)
   @ExceptionHandler(value = {ServiceException.class})
-  public Map<String, String> handleServiceException(ServiceException exception) {
+  public Map<String, String> handleServiceException(
+      ServiceException exception) {
     Map<String, String> result = new HashMap<>();
 
     result.put("message", exception.getMessage());

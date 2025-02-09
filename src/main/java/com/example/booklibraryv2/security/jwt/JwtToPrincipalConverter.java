@@ -15,11 +15,11 @@ public class JwtToPrincipalConverter {
     return UserPrincipal.builder()
         .id(Long.valueOf(decodedJwt.getSubject()))
         .username(decodedJwt.getClaim("u").asString())
-        .authorities(extractAuthoririesFromClaim(decodedJwt))
+        .authorities(extractAuthoritiesFromClaim(decodedJwt))
         .build();
   }
 
-  private List<SimpleGrantedAuthority> extractAuthoririesFromClaim(DecodedJWT decodedJwt) {
+  private List<SimpleGrantedAuthority> extractAuthoritiesFromClaim(DecodedJWT decodedJwt) {
     Claim claim = decodedJwt.getClaim("a");
 
     return (claim.isNull() || claim.isMissing())
