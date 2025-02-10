@@ -7,6 +7,7 @@ import com.example.booklibraryv2.dto.validationGroups.UpdateGroup;
 import com.example.booklibraryv2.exceptions.ServiceException;
 import com.example.booklibraryv2.mappers.BookMapper;
 import com.example.booklibraryv2.services.BookService;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -32,6 +33,8 @@ public class BookControllerV1 {
 
 
   @Tag(name = "Book API")
+  @Operation(summary = "get all books",
+      description = "returns list of all books")
   @GetMapping
   public List<BookResponse> getAll() {
     return bookMapper.toResponses(
@@ -39,6 +42,8 @@ public class BookControllerV1 {
   }
 
   @Tag(name = "Book API")
+  @Operation(summary = "get book by id",
+      description = "returns book with specified id")
   @GetMapping("/{id}")
   public BookResponse getById(
       @PathVariable("id") Long id) throws ServiceException {
@@ -47,6 +52,8 @@ public class BookControllerV1 {
   }
 
   @Tag(name = "Book API")
+  @Operation(summary = "find books by containing of specified line",
+      description = "returns list of books that contains specified line in name")
   @GetMapping("/find/{searchQuery}")
   public List<BookResponse> findByNameContains(
       @PathVariable("searchQuery") String searchQuery) {
@@ -55,6 +62,8 @@ public class BookControllerV1 {
   }
 
   @Tag(name = "Book API")
+  @Operation(summary = "create new book",
+      description = "returns created book")
   @PostMapping
   @ResponseStatus(HttpStatus.CREATED)
   public BookResponse create(
@@ -64,6 +73,8 @@ public class BookControllerV1 {
   }
 
   @Tag(name = "Book API")
+  @Operation(summary = "update book fields",
+      description = "returns updated book")
   @PatchMapping("/{id}")
   public BookResponse update(
       @PathVariable("id") Long id,
@@ -74,6 +85,8 @@ public class BookControllerV1 {
   }
 
   @Tag(name = "Book API")
+  @Operation(summary = "delete book by id",
+      description = "returns empty body")
   @DeleteMapping("/{id}")
   @ResponseStatus(HttpStatus.NO_CONTENT)
   public void delete(
