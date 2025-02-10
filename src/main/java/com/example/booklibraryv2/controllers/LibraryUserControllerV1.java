@@ -7,6 +7,7 @@ import com.example.booklibraryv2.dto.validationGroups.UpdateGroup;
 import com.example.booklibraryv2.exceptions.ServiceException;
 import com.example.booklibraryv2.mappers.LibraryUserMapper;
 import com.example.booklibraryv2.services.LibraryUserService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -30,12 +31,14 @@ public class LibraryUserControllerV1 {
   private final LibraryUserMapper libraryUserMapper;
 
 
+  @Tag(name = "LibraryUser API")
   @GetMapping
   public List<LibraryUserResponse> getAll() {
     return libraryUserMapper.toResponses(
         libraryUserService.getAll());
   }
 
+  @Tag(name = "LibraryUser API")
   @GetMapping("/{id}")
   public LibraryUserResponse getById(
       @PathVariable Long id) {
@@ -43,6 +46,7 @@ public class LibraryUserControllerV1 {
         libraryUserService.findById(id));
   }
 
+  @Tag(name = "LibraryUser API")
   @GetMapping("/find/{searchQuery}")
   public List<LibraryUserResponse> findByNameContains(
       @PathVariable String searchQuery) {
@@ -50,6 +54,7 @@ public class LibraryUserControllerV1 {
         libraryUserService.findByNameContains(searchQuery));
   }
 
+  @Tag(name = "LibraryUser API")
   @PostMapping
   @ResponseStatus(HttpStatus.CREATED)
   public LibraryUserResponse create(
@@ -59,6 +64,7 @@ public class LibraryUserControllerV1 {
             libraryUserMapper.toEntity(newLibraryUser)));
   }
 
+  @Tag(name = "LibraryUser API")
   @PatchMapping("/{id}")
   public LibraryUserResponse update(
       @PathVariable(name = "id") Long id,
@@ -68,6 +74,7 @@ public class LibraryUserControllerV1 {
         libraryUserService.update(id, updatedLibraryUser));
   }
 
+  @Tag(name = "LibraryUser API")
   @DeleteMapping("/{id}")
   @ResponseStatus(HttpStatus.NO_CONTENT)
   public void delete(

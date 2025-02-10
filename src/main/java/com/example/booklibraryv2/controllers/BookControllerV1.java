@@ -7,6 +7,7 @@ import com.example.booklibraryv2.dto.validationGroups.UpdateGroup;
 import com.example.booklibraryv2.exceptions.ServiceException;
 import com.example.booklibraryv2.mappers.BookMapper;
 import com.example.booklibraryv2.services.BookService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -30,12 +31,14 @@ public class BookControllerV1 {
   private final BookMapper bookMapper;
 
 
+  @Tag(name = "Book API")
   @GetMapping
   public List<BookResponse> getAll() {
     return bookMapper.toResponses(
         bookService.getAll());
   }
 
+  @Tag(name = "Book API")
   @GetMapping("/{id}")
   public BookResponse getById(
       @PathVariable("id") Long id) throws ServiceException {
@@ -43,6 +46,7 @@ public class BookControllerV1 {
         bookService.findById(id));
   }
 
+  @Tag(name = "Book API")
   @GetMapping("/find/{searchQuery}")
   public List<BookResponse> findByNameContains(
       @PathVariable("searchQuery") String searchQuery) {
@@ -50,6 +54,7 @@ public class BookControllerV1 {
         bookService.findByNameContains(searchQuery));
   }
 
+  @Tag(name = "Book API")
   @PostMapping
   @ResponseStatus(HttpStatus.CREATED)
   public BookResponse create(
@@ -58,6 +63,7 @@ public class BookControllerV1 {
         bookService.save(bookMapper.toEntity(newBook)));
   }
 
+  @Tag(name = "Book API")
   @PatchMapping("/{id}")
   public BookResponse update(
       @PathVariable("id") Long id,
@@ -67,6 +73,7 @@ public class BookControllerV1 {
         bookService.update(id, updatedFields));
   }
 
+  @Tag(name = "Book API")
   @DeleteMapping("/{id}")
   @ResponseStatus(HttpStatus.NO_CONTENT)
   public void delete(
