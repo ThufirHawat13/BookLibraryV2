@@ -70,9 +70,9 @@ public class WebSecurityConfig {
   @RequiredArgsConstructor
   @Getter
   private enum BaseEndpoint {
-    BOOKS_V1("api/v1/books"),
-    LIBRARY_USERS_V1("api/v1/libraryUsers"),
-    AUTH_V1("api/v1/auth");
+    BOOKS_V1("/api/v1/books"),
+    LIBRARY_USERS_V1("/api/v1/libraryUsers"),
+    AUTH_V1("/api/v1/auth");
 
     private final String endpoint;
   }
